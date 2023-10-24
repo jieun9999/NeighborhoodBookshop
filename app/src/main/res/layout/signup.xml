@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ConstraintLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="63dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="128dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/book_3d" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="414dp"
+        android:layout_height="73dp"
+        android:layout_marginBottom="200dp"
+        android:background="#878ECD"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:title="툴바 이름" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="252dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="20dp"
+        android:autoSizeTextType="uniform"
+        android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/yeongdeoksea"
+        android:text="동네책방"
+        android:textAlignment="viewEnd"
+        android:textColorHint="#000000"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.077" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/dropshadow"
+        android:orientation="vertical"
+        android:paddingTop="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0">
+
+        <EditText
+            android:id="@+id/이름입력"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="userId"
+            android:background="@drawable/dropshadow"
+            android:ems="10"
+            android:fontFamily="@font/yeongdeokblueroad"
+            android:hint="이름"
+            android:inputType="text"
+            android:minHeight="50dp"
+            android:textColorHighlight="@color/black"
+            android:textSize="22sp" />
+
+        <EditText
+            android:id="@+id/아이디입력"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:autofillHints="userId"
+            android:background="@drawable/dropshadow"
+            android:ems="10"
+            android:fontFamily="@font/yeongdeokblueroad"
+            android:hint="아이디"
+            android:inputType="text"
+            android:minHeight="50dp"
+            android:textSize="22sp" />
+
+        <EditText
+            android:id="@+id/비밀번호입력"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:autofillHints="password"
+            android:background="@drawable/dropshadow"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:fontFamily="@font/yeongdeokblueroad"
+            android:hint="비밀번호"
+            android:minHeight="50dp"
+            android:textSize="22sp" />
+
+
+        <EditText
+            android:id="@+id/비밀번호확인"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:autofillHints="password"
+            android:background="@drawable/dropshadow"
+            android:ems="10"
+            android:fontFamily="@font/yeongdeokblueroad"
+            android:hint="비밀번호확인"
+            android:inputType="textPassword"
+            android:minHeight="50dp"
+            android:textSize="22sp" />
+
+        <android.widget.Button
+            android:id="@+id/button"
+            android:layout_width="328dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginRight="15dp"
+            android:fontFamily="@font/yeongdeoksea"
+            android:minHeight="60dp"
+            android:text="회원가입"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:background="@drawable/button"/>
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

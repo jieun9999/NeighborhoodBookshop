@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<!--    네트워크만을 이용해서 약 1.6km 이내로 위치를 파악-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<!--    GPS도 같이 써서 위치를 약 50m 이내로 더 정확하게 파악-->
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.NeighborhoodBookshop"
+        tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCAbgJVMU4OSMwMEgNiJ1QqueNLx61ZAGs" />
+
+        <activity
+            android:name=".ShowCurrentLocation"
+            android:exported="true" />
+        <activity
+            android:name=".ApplyGoogleMapsActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".BookDirectRegisterEditActivity"
+            android:exported="true" />
+        <activity
+            android:name=".BookSpecificActivity"
+            android:exported="true" />
+        <activity
+            android:name=".BookDirectRigisterActivity2"
+            android:exported="true" />
+        <activity
+            android:name=".BookDirectRegisterActivity1"
+            android:exported="true" />
+        <activity
+            android:name=".BookSearchActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SettingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".TimerActivity"
+            android:exported="true" />
+        <activity
+            android:name=".BookClubActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ExploreActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SignupActivity"
+            android:exported="true" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+
+            <!-- 동일한 액티비티가 중복으로 생성되지 않도록 할 수 있습니다. -->
+        </activity>
+    </application>
+
+</manifest>
