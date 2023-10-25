@@ -28,7 +28,6 @@ public class ApplyGoogleMapsActivity extends AppCompatActivity implements OnMapR
         //지도 표시를 위한 프래그먼트를 가져옵니다.
         mapFragment.getMapAsync(ApplyGoogleMapsActivity.this);
         //mapFragment를 비동기적으로 가져와서 onMapReady 메소드를 호출하기 위해 MyLocationActivity 클래스 자체를 인자로 전달하여 등록
-
     }
 
     @Override

@@ -18,16 +18,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="409dp"
         android:layout_height="781dp"
-        android:scrollbars="none"
+        android:background="#DFF4F3"
         android:fillViewport="true"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar3"
-        app:layout_constraintVertical_bias="0.0"
-        android:background="#DFF4F3">
+        app:layout_constraintVertical_bias="0.0">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -186,9 +187,11 @@
 
     <ImageView
         android:id="@+id/dotsbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="70dp"
+        android:layout_height="77dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar3"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.27"
         app:srcCompat="@drawable/threedots" />
 </androidx.constraintlayout.widget.ConstraintLayout>
