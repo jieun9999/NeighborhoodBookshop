@@ -16,9 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NeighborhoodBookshop"
         tools:targetApi="31">
+
+        <activity
+            android:name=".bookReviewListActivity"
+            android:exported="true" />
         <activity
             android:name=".ShowSpecificActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

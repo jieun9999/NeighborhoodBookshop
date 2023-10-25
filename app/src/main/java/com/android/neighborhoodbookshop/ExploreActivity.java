@@ -1,25 +1,18 @@
 package com.android.neighborhoodbookshop;
 
-import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -62,6 +54,7 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
     String profile_image;
     String profile_location;
     String profile_introduce;
+    String userId;
 
     LinearLayout 내서재;
     LinearLayout 탐색;
@@ -132,6 +125,24 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
         타이머= (LinearLayout) findViewById(R.id.timer);
         설정 = (LinearLayout) findViewById(R.id.setting);
 
+        //서치뷰에 유저가 검색어를 입력하면, 그 검색어를 인텐트로 다음 액티비티에 전송함
+        SearchView searchView = (SearchView) findViewById(R.id.searchview0);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                // s는 사용자가 입력한 문자열
+                Intent intent = new Intent(getApplicationContext(), bookReviewListActivity.class);
+                intent.putExtra("bookName", s);
+                startActivity(intent);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -193,7 +204,7 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
                 bottomSheetDialog.setContentView(bottomSheetView);
 
                 //마커의 정보 가져오기
-                String userId = marker.getTag().toString();
+                userId = marker.getTag().toString();
                 //프로필 쉐어드 파일에서 데이터 가져오기
                 SharedPreferences sharedPreferences1 = getSharedPreferences("프로필", MODE_PRIVATE);
                 String json = sharedPreferences1.getString(userId, null);
@@ -234,8 +245,20 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
                 userName.setSingleLine(true); // 긴 텍스트를 한줄로 표시
                 userName.setEllipsize(TextUtils.TruncateAt.MARQUEE); //텍스트가 잘릴경우 (길 경우) 흐르게 만들기
                 userName.setSelected(true); //해당 텍스트뷰가 선택된것처럼 만들기
+                userLocation.setSingleLine(true);
+                userLocation.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                userLocation.setSelected(true);
 
                 bottomSheetDialog.show();
+
+                //바텀시트를 클릭하면, 상대방의 프로필 화면으로 넘어간다 (후순위)
+                bottomSheetView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        Intent intent = new Intent(ExploreActivity.this, ProfileActivity.class);
+//                        intent.putExtra("userId", userId);
+                    }
+                });
                 return true;
             }
         });

@@ -16,15 +16,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.widget.SearchView
+            android:id="@+id/searchview0"
             android:layout_width="380dp"
             android:layout_height="65dp"
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="20dp"
             android:background="#FFFFFF"
-            android:contextClickable="true"
             android:elevation="10dp"
-            android:iconifiedByDefault="false"
-            android:queryHint="책제목으로 검색해보세요">
+            android:queryHint="책제목으로 검색해보세요"
+            android:iconifiedByDefault="false">
 
         </android.widget.SearchView>
 
