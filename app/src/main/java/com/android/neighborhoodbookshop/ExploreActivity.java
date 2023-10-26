@@ -131,7 +131,7 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public boolean onQueryTextSubmit(String s) {
                 // s는 사용자가 입력한 문자열
-                Intent intent = new Intent(getApplicationContext(), bookReviewListActivity.class);
+                Intent intent = new Intent(getApplicationContext(), BookReviewListActivity.class);
                 intent.putExtra("bookName", s);
                 startActivity(intent);
                 return true;

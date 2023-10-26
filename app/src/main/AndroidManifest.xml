@@ -16,9 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NeighborhoodBookshop"
         tools:targetApi="31">
-
         <activity
-            android:name=".bookReviewListActivity"
+            android:name=".ExploreBookReviewActivity"
+            android:exported="true"
+           />
+        <activity
+            android:name=".BookReviewListActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true" />
         <activity
             android:name=".ShowSpecificActivity"
