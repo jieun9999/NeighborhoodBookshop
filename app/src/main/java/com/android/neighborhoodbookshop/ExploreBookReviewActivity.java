@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -46,6 +48,10 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     TextView textView_rateNum;
     RatingBar ratingBar;
     TextView memo;
+
+    //좋아요, 댓글 갯수
+    int likeBtn_num = 0; //나중에는 쉐어드 파일에서 가져온 초기값 사용
+    int chatBtn_num = 0;
 
 
     @Override
@@ -128,6 +134,56 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
         user_image.setImageURI(imageUri);
         user_name.setText(userName);
         user_location.setText(userLocation);
+
+
+        //좋아요, 댓글 기능 구현
+        Button likeBtn = findViewById(R.id.button);
+        Button chatBtn = findViewById(R.id.button5);
+
+        // 초기 상태 설정
+        final boolean[] isLikeClicked = {false};
+        final boolean[] isChatClicked = {false};
+
+        TextView like_num = findViewById(R.id.textView23);
+        TextView chat_num = findViewById(R.id.textView21);
+
+        //초기값
+        like_num.setText(String.valueOf(likeBtn_num));
+        chat_num.setText(String.valueOf(chatBtn_num));
+
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 토글 상태 변경
+                isLikeClicked[0] = !isLikeClicked[0];
+                // 배경 이미지 변경
+                if (isLikeClicked[0]) {
+                    likeBtn.setBackgroundResource(R.drawable.likebtn_clicked);
+                    likeBtn_num += 1;
+                } else {
+                    likeBtn.setBackgroundResource(R.drawable.likebtn); // 원래 상태의 배경 이미지
+                    likeBtn_num += -1;
+                }
+                like_num.setText(String.valueOf(likeBtn_num));
+            }
+        });
+
+        chatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 토글 상태 변경
+                isChatClicked[0] = !isChatClicked[0];
+                // 배경 이미지 변경
+                if (isChatClicked[0]) {
+                    chatBtn.setBackgroundResource(R.drawable.chatbtn_clicked);
+                    chatBtn_num += 1;
+                } else {
+                    chatBtn.setBackgroundResource(R.drawable.chatbtn); // 원래 상태의 배경 이미지
+                    chatBtn_num += -1;
+                }
+                chat_num.setText(String.valueOf(chatBtn_num));
+            }
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
