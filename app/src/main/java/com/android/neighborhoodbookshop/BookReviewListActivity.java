@@ -77,7 +77,7 @@ public class BookReviewListActivity extends AppCompatActivity {
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
 
             //This line checks if the key of the current entry starts with value
-            if (entry.getKey().split("_")[1].equals(input)){
+            if (entry.getKey().split("_")[1].contains(input)){
 
                 String userId = entry.getKey().split("_")[0];
 

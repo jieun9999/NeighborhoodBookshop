@@ -44,6 +44,7 @@ public class BookReviewListAdapter extends RecyclerView.Adapter<BookReviewListAd
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), ExploreBookReviewActivity.class);
                 intent.putExtra("position", position); //아이템의 인덱스를 전달함
+                intent.putExtra("userName", holder.userName.getText().toString()); //아이템의 인덱스를 전달함
                 view.getContext().startActivity(intent);
             }
         });

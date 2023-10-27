@@ -13,7 +13,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -23,6 +27,14 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     int position; //리사이클러뷰 아이템의 위치
     BookReviewItem bookReviewItem; //선택한 리사이클러뷰 아이템
     String key; //선택한 리사이클러뷰 아이템의 쉐어드 키
+    String userId;
+
+    //아이템의 유저이름, 유저사진, 유저위치
+    String userName;
+    String userImage;
+    String userLocation;
+    //유저 프로필 클래스
+    ProfileManager profileManager;
 
 
     //화면에서 바뀔 항목 지정하기
@@ -64,6 +76,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
         //fullName key 를 얻었다 (userId_bookName_X)
         bookReviewItem = bookReviewItems.get(position);
         key = bookReviewItem.getKey();
+        userId = key.split("_")[0];
 
         SharedPreferences sharedPreferences = getSharedPreferences("책리뷰", MODE_PRIVATE);
         String jsonData = sharedPreferences.getString(key, null);
@@ -72,8 +85,8 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(jsonData);
 
                 // 문자열 이미지 파일 경로를 URI로 변환
-                Uri imageUri = Uri.parse(jsonArray.get(0).toString());
-                imageView.setImageURI(imageUri);
+                Uri imageUri2 = Uri.parse(jsonArray.get(0).toString());
+                imageView.setImageURI(imageUri2);
                 textView_title.setText(jsonArray.get(1).toString());
                 textView_writer.setText(jsonArray.get(2).toString());
                 textView_company.setText(jsonArray.get(3).toString());
@@ -89,7 +102,32 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
             }
         }
 
+        //프로필 중 프로필 사진, 유저 위치 데이터를 가져온다.
+        // 프로필 객체를 만들어준다. 객체를 먼저 만들어야, 해당 객체의 기능을 사용할 수 있다
+        profileManager = new ProfileManager();
+        //userId를 가지고 프로필을 찾는다
+        SharedPreferences sharedPreferences2 = getSharedPreferences("프로필", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json= sharedPreferences2.getString(userId, null); //기본값 null
+        //키인 userId로 뽑은 객체인 profileManager
+        // profileManager가 null이 아닌 경우에만 쉐어드에서 뽑아와서 할당한다
+        if(json != null){
+            profileManager = gson.fromJson(json, ProfileManager.class);
+        }
 
+        userName = intent.getStringExtra("userName"); //userName만 인텐트로 가져오기
+        userImage = profileManager.getImagePath();
+        userLocation = profileManager.getLocation().substring(5);
+
+        //하단의 프로필 내용 교체하기
+        ImageView user_image = findViewById(R.id.imageView15);
+        TextView user_name = findViewById(R.id.textView18);
+        TextView user_location = findViewById(R.id.textView19);
+
+        Uri imageUri = Uri.parse(userImage);
+        user_image.setImageURI(imageUri);
+        user_name.setText(userName);
+        user_location.setText(userLocation);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
