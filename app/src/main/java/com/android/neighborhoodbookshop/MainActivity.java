@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //메인 액티비티에서 static 사용자 ID를 가져옴
+        //UserManager에서 static으로 사용자 ID를 가져옴
         userId = UserManager.getUserId();
 
         //프로필의 이름, 가입정보 쉐어드 파일에서 불러오기
