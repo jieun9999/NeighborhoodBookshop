@@ -2,6 +2,8 @@ package com.android.neighborhoodbookshop;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +18,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -40,9 +43,9 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     String jsonString; // 책리뷰 쉐어드에서 가져온 데이터 어레이를 문자열로 변환
 
     //아이템의 유저이름, 유저사진, 유저위치
-    String userName;
-    String userImage;
-    String userLocation;
+    String review_userName;
+    String review_userImage;
+    String review_userLocation;
 
     //유저 프로필 클래스
     ProfileManager profileManager;
@@ -72,8 +75,34 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     // 좋아요 누가 눌렀는지 나타내는 변수 {"abc123":true,"kfc456":true}
     JSONObject userLikes;
 
-    //현재 로그인된 계정의 유저 아이디
+
+    // 현재 로그인된 계정의 유저 아이디
     String userId;
+    // 현재 로그인된 계정의 이름
+    String userName;
+    // 현재 로그인된 계정의 유저 사진
+    String userImagePath;
+    //현재 로그인된 계정의 유저 위치
+    String userLocation;
+    //유저가 남긴 코멘트
+    String comment;
+    //유저가 게시물 남긴 시간
+    String time;
+    ProfileManager commentProfileManager;
+
+
+    //댓글 리사이클러뷰
+    RecyclerView commentRecyclerView;
+    //댓글 어댑터
+    CommentAdapter commentAdapter;
+    private ArrayList<CommentItem> commentList;
+    //댓글 등록 버튼
+    ImageView uploadBtn;
+    //텍스트 인풋창
+    TextInputEditText textInputEditText;
+    CommentItem newCommentItem;
+    ImageView closeBtn;
+
 
 
     @Override
@@ -216,14 +245,14 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
             profileManager = gson.fromJson(json, ProfileManager.class);
         }
 
-        userName = intent.getStringExtra("userName"); //userName만 인텐트로 가져오기
-        userImage = profileManager.getImagePath();
-        userLocation = profileManager.getLocation().substring(5);
+        review_userName = intent.getStringExtra("userName"); //userName만 인텐트로 가져오기
+        review_userImage = profileManager.getImagePath();
+        review_userLocation = profileManager.getLocation().substring(5);
 
-        Uri imageUri = Uri.parse(userImage);
+        Uri imageUri = Uri.parse(review_userImage);
         user_image.setImageURI(imageUri);
-        user_name.setText(userName);
-        user_location.setText(userLocation);
+        user_name.setText(review_userName);
+        user_location.setText(review_userLocation);
 
         likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,28 +299,42 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
             }
         });
 
+        //바텀 다어얼로그 초기화
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ExploreBookReviewActivity.this); //바텀 다어얼로그
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.comment_layout, null); //바텀 다이얼로그 뷰
+        bottomSheetDialog.setContentView(bottomSheetView);
 
+        //바텀 시트 속 등록버튼, 입력창 초기화
+        uploadBtn = bottomSheetView.findViewById(R.id.imageView17);
+        textInputEditText = bottomSheetView.findViewById(R.id.input);
+        commentRecyclerView = bottomSheetView.findViewById(R.id.recyclerView10);
+
+        //다음 과정은 onCreate 바로 안에서 설정해준다. (btn.setOnClickListener 안이 아니라)
+        //commentList의 형태 잡아줌
+        //CommentItem : String imagePath, String userName, String userLocation, String comment, String time
+        commentList = new ArrayList<CommentItem>();
+
+        // error: int java.util.ArrayList.size()' on a null object reference
+        //if CommentItem is the type of objects you want to store in the list, you should initialize it like this:
+        //initiate adapter
+        commentAdapter = new CommentAdapter();
+        //onCreate 바로 안에 써주기
+        //어댑터에게 리사이클러뷰 변동됨을 알림
+        commentAdapter.setCommentList(commentList);
+
+        //initiate recyclerview
+        commentRecyclerView.setAdapter(commentAdapter);
+        commentRecyclerView.setLayoutManager(new LinearLayoutManager(ExploreBookReviewActivity.this));
+
+        // 버튼 속 버튼 함수를 만들지 말고, 따로 따로 선언하는 것이 보기 좋다
+        //바텀 다어얼로그 등장 설정
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //step1. 렌더링
                 // 배경 이미지 변경
                 chatBtn.setBackgroundResource(R.drawable.chatbtn_clicked);
-
-                //바텀 다어얼로그 등장
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ExploreBookReviewActivity.this); //바텀 다어얼로그
-                View bottomSheetView = getLayoutInflater().inflate(R.layout.comment_layout, null); //바텀 다이얼로그 뷰
-                bottomSheetDialog.setContentView(bottomSheetView);
-
                 bottomSheetDialog.show();
-
-                // 바텀 다이얼로그 사라지게
-                ImageView closeBtn = bottomSheetView.findViewById(R.id.imageView18);
-                closeBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        bottomSheetDialog.dismiss();
-                    }
-                });
 
                 try {
                     jsonArray.put(10, chatBtn_num); // 10번째 인덱스에 댓글 갯수 설정
@@ -311,7 +354,53 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
             }
         });
 
+        // 바텀 다이얼로그 사라지게
+        closeBtn = bottomSheetView.findViewById(R.id.imageView18);
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.dismiss();
+            }
+        });
 
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 1. String userImagePath, String userLocation에 해당하는 데이터를 가져온다
+                // 프로필 객체를 만들어준다. 객체를 먼저 만들어야, 해당 객체의 기능을 사용할 수 있다
+                commentProfileManager = new ProfileManager();
+                //userId를 가지고 프로필을 찾는다
+                SharedPreferences sharedPreferences2 = getSharedPreferences("프로필", MODE_PRIVATE);
+                Gson gson = new Gson();
+                String json= sharedPreferences2.getString(userId, null); //기본값 null
+                //키인 userId로 뽑은 객체인 CommentProfileManager
+                // CommentProfileManager가 null이 아닌 경우에만 쉐어드에서 뽑아와서 할당한다
+                if(json != null){
+                    commentProfileManager = gson.fromJson(json, ProfileManager.class);
+                }
+
+                // 2. String userName에 해당하는 데이터를 가져온다.
+                SharedPreferences pref = getSharedPreferences("가입정보", MODE_PRIVATE);
+                String jsonData = pref.getString(userId, null);
+                if (jsonData != null) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(jsonData);
+                        userName = jsonArray.getString(0);//쉐어드 유저이름을 저장할 변수
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                // 3. String comment, String time 데이터를 가져온다
+                comment = textInputEditText.getText().toString();
+                time = "10분 전"; // 추후 변경 예정
+                newCommentItem = new CommentItem(commentProfileManager.getImagePath(), userName, commentProfileManager.getLocation().substring(5),comment,time);
+                commentList.add(newCommentItem);
+
+                //새롭게 아이템이 추가되었음을 알림
+                commentAdapter.notifyItemInserted(commentList.size() -1);
+            }
+        });
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar3);
         setSupportActionBar(toolbar);

@@ -6,7 +6,7 @@
     android:layout_height="630dp">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView2"
+        android:id="@+id/recyclerView10"
         android:layout_width="411dp"
         android:layout_height="500dp"
         android:layout_marginTop="20dp"
@@ -58,7 +58,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView2">
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView10">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="335dp"
@@ -68,6 +68,7 @@
             android:paddingRight="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input"
                 android:layout_width="290dp"
                 android:layout_height="58dp"
                 android:hint="댓글을 남겨보세요." />
@@ -90,7 +91,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView2"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView10"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/closeicon" />
 
