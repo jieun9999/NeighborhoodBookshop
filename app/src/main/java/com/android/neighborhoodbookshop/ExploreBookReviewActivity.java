@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,8 +13,10 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -25,14 +28,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
-public class ExploreBookReviewActivity extends AppCompatActivity {
+public class ExploreBookReviewActivity extends AppCompatActivity implements ChatNumListener {
 
     //1. 다른 유저의 책리뷰를 볼 수 있음
     //2. 다른 유저의 책리뷰에 좋아요를 남길 수 있음 (색깔 진하게, +1)/ 쉐어드에 저장
-    //3. 다른 유저의 책리뷰에 댓글을 남길 수 있음 (리사이클러뷰 사용)/ 쉐어드에 저장
+    //3. 다른 유저의 책리뷰에 댓글을 남기거나 삭제할 수 있음 (리사이클러뷰 사용)/ 쉐어드에 저장
 
     ArrayList<BookReviewItem> bookReviewItems; // BookReviewListActivity의 bookReviewItems에서 가져옴 (ex 총균쇠라고 칠때 나오는 총균쇠 모든 리뷰들)
     int position; //리사이클러뷰 아이템의 위치
@@ -61,7 +67,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     RatingBar ratingBar;
     TextView memo;
     TextView like_num;
-    TextView chat_num;
+    static TextView chat_num;
     Button likeBtn;
     Button chatBtn;
     ImageView user_image;
@@ -87,7 +93,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     //유저가 남긴 코멘트
     String comment;
     //유저가 게시물 남긴 시간
-    String time;
+    long time;
     ProfileManager commentProfileManager;
 
 
@@ -95,13 +101,14 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
     RecyclerView commentRecyclerView;
     //댓글 어댑터
     CommentAdapter commentAdapter;
-    private ArrayList<CommentItem> commentList;
+    ArrayList<CommentItem> commentList;
     //댓글 등록 버튼
     ImageView uploadBtn;
     //텍스트 인풋창
     TextInputEditText textInputEditText;
     CommentItem newCommentItem;
     ImageView closeBtn;
+    TextView commentNum;
 
 
 
@@ -304,10 +311,16 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
         View bottomSheetView = getLayoutInflater().inflate(R.layout.comment_layout, null); //바텀 다이얼로그 뷰
         bottomSheetDialog.setContentView(bottomSheetView);
 
+        // 키보드가 뷰를 들어올리는 것을 방지 (프로그래밍 적으로 해결하기)
+        bottomSheetDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         //바텀 시트 속 등록버튼, 입력창 초기화
+        commentNum = bottomSheetView.findViewById(R.id.textView37);
         uploadBtn = bottomSheetView.findViewById(R.id.imageView17);
         textInputEditText = bottomSheetView.findViewById(R.id.input);
         commentRecyclerView = bottomSheetView.findViewById(R.id.recyclerView10);
+
+        commentNum.setText(String.valueOf(chatBtn_num));//쉐어드 에서 가져온 갯수 할당
 
         //다음 과정은 onCreate 바로 안에서 설정해준다. (btn.setOnClickListener 안이 아니라)
         //commentList의 형태 잡아줌
@@ -317,9 +330,9 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
         // error: int java.util.ArrayList.size()' on a null object reference
         //if CommentItem is the type of objects you want to store in the list, you should initialize it like this:
         //initiate adapter
-        commentAdapter = new CommentAdapter();
+        commentAdapter = new CommentAdapter(this);
         //onCreate 바로 안에 써주기
-        //어댑터에게 리사이클러뷰 변동됨을 알림
+        //어댑터와 리사이클러뷰 연결(읽기 용)
         commentAdapter.setCommentList(commentList);
 
         //initiate recyclerview
@@ -335,22 +348,6 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
                 // 배경 이미지 변경
                 chatBtn.setBackgroundResource(R.drawable.chatbtn_clicked);
                 bottomSheetDialog.show();
-
-                try {
-                    jsonArray.put(10, chatBtn_num); // 10번째 인덱스에 댓글 갯수 설정
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                chat_num.setText(String.valueOf(chatBtn_num));
-                // 댓글 수 쉐어드에 저장
-                jsonString = jsonArray.toString();
-
-                // 이제 jsonString을 SharedPreferences에 저장할 수 있습니다.
-                SharedPreferences preferences = getSharedPreferences("책리뷰", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(key, jsonString);
-                editor.apply();
-
             }
         });
 
@@ -393,12 +390,18 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
 
                 // 3. String comment, String time 데이터를 가져온다
                 comment = textInputEditText.getText().toString();
-                time = "10분 전"; // 추후 변경 예정
-                newCommentItem = new CommentItem(commentProfileManager.getImagePath(), userName, commentProfileManager.getLocation().substring(5),comment,time);
+                time = System.currentTimeMillis(); // 현재 시간 구하기
+                newCommentItem = new CommentItem(commentProfileManager.getImagePath(), userName, commentProfileManager.getLocation().substring(5),comment, time);
                 commentList.add(newCommentItem);
 
                 //새롭게 아이템이 추가되었음을 알림
                 commentAdapter.notifyItemInserted(commentList.size() -1);
+
+                //빈 창으로 만들기
+                textInputEditText.setText("");
+
+                //댓글 수 쉐어드에 저장하는 함수
+                StoreChatNum(ExploreBookReviewActivity.this);
             }
         });
 
@@ -407,6 +410,30 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //뒤로가기 버튼
     }
+
+    public void StoreChatNum(Context context){
+        //댓글 수 쉐어드에 저장
+        //1. jsonArray에 추가
+        try {
+            jsonArray.put(10, commentList.size()); // 10번째 인덱스에 댓글 갯수 설정
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        chat_num.setText(String.valueOf(commentList.size())); // 다이얼로그 상단 댓글 수 텍스트 수정
+        commentNum.setText(String.valueOf(commentList.size())); //댓글 수 텍스트 수정
+
+        //2. jsonArray => jsonString 파싱
+        jsonString = jsonArray.toString();
+
+        // Use the provided context to access SharedPreferences
+        // 이제 jsonString을 SharedPreferences에 저장할 수 있습니다.
+        SharedPreferences preferences = getSharedPreferences("책리뷰", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, jsonString);
+        editor.apply();
+    }
+
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -417,4 +444,16 @@ public class ExploreBookReviewActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // 2. StoreChatNum이 포함된 활동에서 인터페이스를 구현합니다.
+    @Override
+    public void onChatNumUpdated(Context context) {
+        StoreChatNum(context);
+    }
 }
+
+   //인터페이스는 액티비티와 어댑터 사이의 메소드 등을 연결해주는 역할
+
+    // ChatNumListener 인터페이스는 onChatNumUpdated 메소드를 정의합니다.
+    // 본 액티비티는 이 인터페이스 "AdapterChatNumListener" 를 구현하고 정의된 메소드(onChatNumUpdated)를 호출할 수 있습니다.
+    // 어댑터에서 특정 이벤트(예: 버튼 클릭)가 발생하면 이러한 방식으로 인터페이스를 사용하면 다양한 용도로 구조화되고 잘 정의된 방식을 만들 수 있습니다.

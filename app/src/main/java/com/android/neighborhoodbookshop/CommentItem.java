@@ -5,22 +5,22 @@ public class CommentItem {
     String userName;
     String userLocation;
     String comment;
-    String time;
+    long timestamp; //아이템이 작성된 시간
 
-    public CommentItem(String userImagePath, String userName, String userLocation, String comment, String time) {
+
+    public CommentItem(String userImagePath, String userName, String userLocation, String comment, long timestamp) {
         this.userImagePath = userImagePath;
         this.userName = userName;
         this.userLocation = userLocation;
         this.comment = comment;
-        this.time = time;
+        this.timestamp = timestamp;
     }
-
 
     public String getUserImagePath() {
         return userImagePath;
     }
 
-    public void seUserImagePath(String imagePath) {
+    public void setUserImagePath(String userImagePath) {
         this.userImagePath = userImagePath;
     }
 
@@ -48,11 +48,11 @@ public class CommentItem {
         this.comment = comment;
     }
 
-    public String getTime() {
-        return time;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

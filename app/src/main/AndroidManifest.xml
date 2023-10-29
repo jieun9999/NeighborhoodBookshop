@@ -19,7 +19,7 @@
         <activity
             android:name=".ExploreBookReviewActivity"
             android:exported="true"
-           />
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
             android:name=".BookReviewListActivity"
             android:windowSoftInputMode="adjustPan"
