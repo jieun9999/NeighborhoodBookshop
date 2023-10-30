@@ -17,15 +17,12 @@
         android:theme="@style/Theme.NeighborhoodBookshop"
         tools:targetApi="31">
         <activity
-            android:name=".ExploreBookReviewActivity"
+            android:name=".explore.ExploreBookReviewActivity"
             android:exported="true"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
-            android:name=".BookReviewListActivity"
+            android:name=".explore.BookReviewListActivity"
             android:windowSoftInputMode="adjustPan"
-            android:exported="true" />
-        <activity
-            android:name=".ShowSpecificActivity"
             android:exported="true" />
 
         <meta-data
@@ -33,43 +30,43 @@
             android:value="AIzaSyCAbgJVMU4OSMwMEgNiJ1QqueNLx61ZAGs" />
 
         <activity
-            android:name=".ShowCurrentLocation"
+            android:name=".explore.ShowCurrentLocation"
             android:exported="true" />
         <activity
-            android:name=".ApplyGoogleMapsActivity"
+            android:name=".explore.ApplyGoogleMapsActivity"
             android:exported="true" />
         <activity
-            android:name=".BookDirectRegisterEditActivity"
+            android:name=".mylibrary.BookDirectRegisterEditActivity"
             android:exported="true" />
         <activity
-            android:name=".BookSpecificActivity"
+            android:name=".mylibrary.BookSpecificActivity"
             android:exported="true" />
         <activity
-            android:name=".BookDirectRigisterActivity2"
+            android:name=".mylibrary.BookDirectRigisterActivity2"
             android:exported="true" />
         <activity
-            android:name=".BookDirectRegisterActivity1"
+            android:name=".mylibrary.BookDirectRegisterActivity1"
             android:exported="true" />
         <activity
-            android:name=".BookSearchActivity"
+            android:name=".explore.BookSearchActivity"
             android:exported="true" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".setting.SettingActivity"
             android:exported="true" />
         <activity
-            android:name=".TimerActivity"
+            android:name=".timer.TimerActivity"
             android:exported="true" />
         <activity
-            android:name=".BookClubActivity"
+            android:name=".bookclub.BookClubActivity"
             android:exported="true" />
         <activity
-            android:name=".ExploreActivity"
+            android:name=".explore.ExploreActivity"
             android:exported="true" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".loginsignup.SignupActivity"
             android:exported="true" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".loginsignup.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -78,7 +75,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".mylibrary.MainActivity"
             android:exported="true"
             android:launchMode="singleTask">
 

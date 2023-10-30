@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DFF4F3"
+    android:orientation="vertical"
+    tools:context=".mylibrary.BookDirectRegisterActivity1">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#DFF4F3"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="234dp">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="161dp"
+            android:layout_height="224dp"
+            android:layout_marginStart="110dp"
+            android:layout_marginEnd="110dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/gallery2" />
+
+        <ImageView
+            android:id="@+id/open_gallery"
+            android:layout_width="47dp"
+            android:layout_height="41dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginEnd="104dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            app:srcCompat="@drawable/picture_plus" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="557dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="375dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="20dp"
+            app:hintTextAppearance="@style/MyHintTextAppearance"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:fontFamily="@font/nanumgothic"
+                android:hint="제목"
+                android:inputType="text" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="375dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            app:hintTextAppearance="@style/MyHintTextAppearance"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/writer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#FFFFFF"
+                android:fontFamily="@font/nanumgothic"
+                android:hint="저자"
+                android:inputType="text" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="375dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            app:hintTextAppearance="@style/MyHintTextAppearance">
+
+            <com.google.android.material.textfield.TextInputEditText
+
+                android:id="@+id/company"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:fontFamily="@font/nanumgothic"
+                android:hint="출판사"
+                android:inputType="text" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="95dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="180dp"
+                android:layout_height="76dp"
+                android:layout_marginTop="10dp"
+                app:hintTextAppearance="@style/MyHintTextAppearance">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:fontFamily="@font/nanumgothic"
+                    android:hint="출판일"
+                    android:inputType="text"
+                    android:textSize="16sp" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="180dp"
+                android:layout_height="76dp"
+                android:layout_marginTop="10dp"
+                app:hintTextAppearance="@style/MyHintTextAppearance">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ISBN"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFFFFF"
+                    android:fontFamily="@font/nanumgothic"
+                    android:hint="ISBN"
+                    android:inputType="text"
+                    android:textSize="16sp" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="308dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="#06283D"
+            android:text="다음"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
