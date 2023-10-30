@@ -20,12 +20,13 @@ import java.util.Locale;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
     //3. CommentAdapter 클래스에서 인터페이스의 인스턴스와 이를 설정할 메서드를 정의합니다.
-    private ChatNumListener chatNumListener;
+    private ChatListener chatListener;
     private ArrayList<CommentItem> commentList;
 
-    public CommentAdapter(ChatNumListener chatNumListener) {
-        this.chatNumListener = chatNumListener;
+    public CommentAdapter(ChatListener chatListener) {
+        this.chatListener = chatListener;
     }
+
 
     @NonNull
     @Override
@@ -51,7 +52,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 //데이터 셋 변경을 알림 (RecylerView 갱신)
                 notifyItemRemoved(clickedPosition);
                 // Call the interface method to update chat num
-                chatNumListener.onChatNumUpdated(holder.itemView.getContext());
+                chatListener.onChatNumUpdated(holder.itemView.getContext());
+                // Call the interface method to update chat data
+                chatListener.onChatDataUpdated(holder.itemView.getContext());
             }
             }
         });
@@ -115,16 +118,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         // such as "X minutes ago," "X hours ago," or "X days ago," depending on the difference in time.
 
         if (timeDifference < minuteMillis) {
-            return "Just now";
+            return "방금";
         } else if (timeDifference < hourMillis) {
             long minutesAgo = timeDifference / minuteMillis;
-            return minutesAgo + " minute" + (minutesAgo > 1 ? "s" : "") + " ago";
+            return minutesAgo + "분"+ " 전";
         } else if (timeDifference < dayMillis) {
             long hoursAgo = timeDifference / hourMillis;
-            return hoursAgo + " hour" + (hoursAgo > 1 ? "s" : "") + " ago";
+            return hoursAgo + "시간"+" 전";
         } else if (timeDifference < weekMillis) {
             long daysAgo = timeDifference / dayMillis;
-            return daysAgo + " day" + (daysAgo > 1 ? "s" : "") + " ago";
+            return daysAgo + "일" + " 전";
         } else {
             // Format as a specific date if it's been more than a week
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());

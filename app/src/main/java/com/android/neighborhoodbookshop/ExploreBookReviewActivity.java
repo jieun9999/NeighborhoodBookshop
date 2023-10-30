@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-public class ExploreBookReviewActivity extends AppCompatActivity implements ChatNumListener {
+public class ExploreBookReviewActivity extends AppCompatActivity implements ChatListener {
 
     //1. 다른 유저의 책리뷰를 볼 수 있음
     //2. 다른 유저의 책리뷰에 좋아요를 남길 수 있음 (색깔 진하게, +1)/ 쉐어드에 저장
@@ -95,7 +95,6 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
     //유저가 게시물 남긴 시간
     long time;
     ProfileManager commentProfileManager;
-
 
     //댓글 리사이클러뷰
     RecyclerView commentRecyclerView;
@@ -175,8 +174,8 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
 
                 //만약 좋아요 갯수, 좋아요 불린, 댓글 갯수가 null 인지 존재하는지 구분해야함
 
-                if(jsonArray.length() == 11){
-                    //쉐어드에 좋아요 갯수, 불린, 댓글 있으면, 쉐어드에서 불러와서 내용 설정
+                if(jsonArray.length() >= 11){
+                    //쉐어드에 좋아요 갯수, 불린, 댓글 갯수 있으면, 쉐어드에서 불러와서 내용 설정
 
                     //This modified code first checks the length of the JSON array (jsonArray.length())
                     // to make sure it has at least 10 elements before attempting to access elements at indices 8 and 9
@@ -198,6 +197,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
                         likeBtn.setBackgroundResource(R.drawable.likebtn); // 원래 상태의 배경 이미지
                         userLikes.put(userId, false); //userId false 값으로 초기화
                     }
+                    //10번째 인덱스 댓글 수 가져오기
                     chatBtn_num = jsonArray.getInt(10);
                     chat_num.setText(String.valueOf(chatBtn_num));
 
@@ -245,11 +245,11 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         //userId를 가지고 프로필을 찾는다
         SharedPreferences sharedPreferences2 = getSharedPreferences("프로필", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json= sharedPreferences2.getString(reviewUserId, null); //기본값 null
+        String jsonData2= sharedPreferences2.getString(reviewUserId, null); //기본값 null
         //키인 userId로 뽑은 객체인 profileManager
         // profileManager가 null이 아닌 경우에만 쉐어드에서 뽑아와서 할당한다
-        if(json != null){
-            profileManager = gson.fromJson(json, ProfileManager.class);
+        if(jsonData2 != null){
+            profileManager = gson.fromJson(jsonData2, ProfileManager.class);
         }
 
         review_userName = intent.getStringExtra("userName"); //userName만 인텐트로 가져오기
@@ -320,12 +320,37 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         textInputEditText = bottomSheetView.findViewById(R.id.input);
         commentRecyclerView = bottomSheetView.findViewById(R.id.recyclerView10);
 
+        commentList = new ArrayList<CommentItem>(); //초기화
+
+        SharedPreferences sharedPreferences3 = getSharedPreferences("댓글", MODE_PRIVATE);
+        String jsonData3 = sharedPreferences3.getString(key, null);
+        if(jsonData3 != null){
+            //[{이름: 징니, 내용: 안녕, 시간: 11},{이름: 징니, 내용: 안녕, 시간: 11},{이름: 징니, 내용: 안녕, 시간: 11}]
+            //이러한 jsonData3를 파싱해서 commentList.add(commentItem); 하는 형태로 commentList에 쉐어드 데이터를 할당해줘야함
+
+            try {
+                JSONArray commentJSONArray = new JSONArray(jsonData3);
+                for (int i = 0; i < commentJSONArray.length(); i++) {
+                    JSONObject commentJsonObject = commentJSONArray.getJSONObject(i);
+                    CommentItem commentItem = new CommentItem(commentJsonObject.getString("userImagePath"),
+                            commentJsonObject.getString("userName"),
+                            commentJsonObject.getString("userLocation"),
+                            commentJsonObject.getString("comment"),
+                            commentJsonObject.getLong("timestamp"));
+
+                    commentList.add(commentItem);
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
         commentNum.setText(String.valueOf(chatBtn_num));//쉐어드 에서 가져온 갯수 할당
 
         //다음 과정은 onCreate 바로 안에서 설정해준다. (btn.setOnClickListener 안이 아니라)
         //commentList의 형태 잡아줌
         //CommentItem : String imagePath, String userName, String userLocation, String comment, String time
-        commentList = new ArrayList<CommentItem>();
 
         // error: int java.util.ArrayList.size()' on a null object reference
         //if CommentItem is the type of objects you want to store in the list, you should initialize it like this:
@@ -369,10 +394,10 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
                 //userId를 가지고 프로필을 찾는다
                 SharedPreferences sharedPreferences2 = getSharedPreferences("프로필", MODE_PRIVATE);
                 Gson gson = new Gson();
-                String json= sharedPreferences2.getString(userId, null); //기본값 null
+                String json = sharedPreferences2.getString(userId, null); //기본값 null
                 //키인 userId로 뽑은 객체인 CommentProfileManager
                 // CommentProfileManager가 null이 아닌 경우에만 쉐어드에서 뽑아와서 할당한다
-                if(json != null){
+                if (json != null) {
                     commentProfileManager = gson.fromJson(json, ProfileManager.class);
                 }
 
@@ -391,17 +416,20 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
                 // 3. String comment, String time 데이터를 가져온다
                 comment = textInputEditText.getText().toString();
                 time = System.currentTimeMillis(); // 현재 시간 구하기
-                newCommentItem = new CommentItem(commentProfileManager.getImagePath(), userName, commentProfileManager.getLocation().substring(5),comment, time);
+                newCommentItem = new CommentItem(commentProfileManager.getImagePath(), userName, commentProfileManager.getLocation().substring(5), comment, time);
                 commentList.add(newCommentItem);
 
                 //새롭게 아이템이 추가되었음을 알림
-                commentAdapter.notifyItemInserted(commentList.size() -1);
+                commentAdapter.notifyItemInserted(commentList.size() - 1);
 
                 //빈 창으로 만들기
                 textInputEditText.setText("");
 
                 //댓글 수 쉐어드에 저장하는 함수
                 StoreChatNum(ExploreBookReviewActivity.this);
+                //댓글 데이터 쉐어드에 저장하는 함수
+                StoreChatData(ExploreBookReviewActivity.this);
+
             }
         });
 
@@ -411,8 +439,9 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //뒤로가기 버튼
     }
 
+
     public void StoreChatNum(Context context){
-        //댓글 수 쉐어드에 저장
+        //댓글 갯수 쉐어드에 저장
         //1. jsonArray에 추가
         try {
             jsonArray.put(10, commentList.size()); // 10번째 인덱스에 댓글 갯수 설정
@@ -434,6 +463,45 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         editor.apply();
     }
 
+    public void StoreChatData(Context context){
+        // 댓글 데이터 쉐어드에 저장하기
+        //댓글 이라는 쉐어드 파일을 하나 만들고, key: userId_bookName_X 에 value는 jsonObject를 원소로 하는 jsonArray(추후, 문자열 파싱)
+        //[{이름: 징니, 내용: 안녕, 시간: 11},{이름: 징니, 내용: 안녕, 시간: 11},{이름: 징니, 내용: 안녕, 시간: 11}]
+        //로 저장한다
+
+        //commentList를 JSON 형식의 문자열로 변환하여 SharedPreferences에 저장하는 단계
+        //step 1. commentList를 JSONArray 로 변환합니다.
+        //step 2. JSONArray를 jsonString으로 직렬화합니다.
+        //step 3. jsonString을 SharedPreferences에 저장합니다.
+
+        // 1. ArrayList<CommentItem> 을 JSON 배열로 변환
+        JSONArray commentJSONArray = new JSONArray();
+        for (CommentItem commentItem:commentList) {
+            JSONObject commentItem_JSONObject = new JSONObject();
+            try {
+                commentItem_JSONObject.put("userImagePath", commentItem.getUserImagePath());
+                commentItem_JSONObject.put("userName", commentItem.getUserName());
+                commentItem_JSONObject.put("userLocation", commentItem.getUserLocation());
+                commentItem_JSONObject.put("comment", commentItem.getComment());
+                commentItem_JSONObject.put("timestamp", commentItem.getTimestamp());
+
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            commentJSONArray.put(commentItem_JSONObject);
+        }
+
+        // 2.  JSON 배열을 문자열로 직렬화
+        String comment_JSONString = commentJSONArray.toString();
+
+        //3. 문자열을 SharedPreferences에 저장
+        SharedPreferences sharedPreferences3 = getSharedPreferences("댓글", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences3.edit();
+        editor.putString(key, comment_JSONString);
+        editor.apply();
+    }
+
+
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -449,6 +517,11 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
     @Override
     public void onChatNumUpdated(Context context) {
         StoreChatNum(context);
+    }
+
+    @Override
+    public void onChatDataUpdated(Context context) {
+        StoreChatData(context);
     }
 }
 
