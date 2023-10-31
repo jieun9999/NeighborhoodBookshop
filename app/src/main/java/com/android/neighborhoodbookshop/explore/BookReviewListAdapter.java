@@ -35,7 +35,7 @@ public class BookReviewListAdapter extends RecyclerView.Adapter<BookReviewListAd
         // 메인액티비티에서는 리사이클러뷰를 초기화하고 어댑터를 설정하는 등의 작업을 수행하며,
         // 어댑터에서는 각 아이템의 뷰를 생성하고 데이터를 바인딩하는 등의 작업을 수행
 
-        //아이템 클릭시 다른 액티비티로 이동
+        //아이템 클릭시 ExploreBookReviewActivity 액티비티로 이동
         //The easiest way to attach a clickListener to items of RecyclerView is within the Adapter as below:
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +59,8 @@ public class BookReviewListAdapter extends RecyclerView.Adapter<BookReviewListAd
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
+        // ViewHolder 클래스는 RecyclerView.ViewHolder를 상속하며,
+        // 1. 아이템 뷰의 구성요소에 대한 참조, 2.데이터 항목을 뷰에 바인딩하는 역할
         ImageView bookImage;
         TextView bookName;
         TextView bookWriter;
@@ -66,6 +68,7 @@ public class BookReviewListAdapter extends RecyclerView.Adapter<BookReviewListAd
         TextView userName;
         TextView userLocation;
 
+        // 1. 아이템 뷰의 구성요소에 대한 참조
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -76,7 +79,7 @@ public class BookReviewListAdapter extends RecyclerView.Adapter<BookReviewListAd
             userName = itemView.findViewById(R.id.user_name);
             userLocation = itemView.findViewById(R.id.user_location);
         }
-
+        // 2.데이터 항목을 뷰에 바인딩하는 역할
         void onBind(BookReviewItem item){
             Uri uri = Uri.parse(item.getBook_imagePath());
             bookImage.setImageURI(uri);

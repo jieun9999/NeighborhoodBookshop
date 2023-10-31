@@ -37,10 +37,11 @@ import java.util.ArrayList;
 
 public class ExploreBookReviewActivity extends AppCompatActivity implements ChatListener {
 
-    //1. 다른 유저의 책리뷰를 볼 수 있음
+    //1. 다른 유저의 책리뷰 + 책리뷰 유저 프로필을 볼 수 있음
     //2. 다른 유저의 책리뷰에 좋아요를 남길 수 있음 (색깔 진하게, +1)/ 쉐어드에 저장
     //3. 다른 유저의 책리뷰에 댓글을 남기거나 삭제할 수 있음 (리사이클러뷰 사용)/ 쉐어드에 저장
 
+    //책리뷰 관련된 변수
     ArrayList<BookReviewItem> bookReviewItems; // BookReviewListActivity의 bookReviewItems에서 가져옴 (ex 총균쇠라고 칠때 나오는 총균쇠 모든 리뷰들)
     int position; //리사이클러뷰 아이템의 위치
     BookReviewItem bookReviewItem; //선택한 리사이클러뷰 아이템
@@ -48,17 +49,6 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
     String reviewUserId; // 선택한 리사이클러뷰 책리뷰 아이템의 작성자 아이디
     JSONArray jsonArray; // 책리뷰 쉐어드에서 가져온 데이터 어레이
     String jsonString; // 책리뷰 쉐어드에서 가져온 데이터 어레이를 문자열로 변환
-
-    //아이템의 유저이름, 유저사진, 유저위치
-    String review_userName;
-    String review_userImage;
-    String review_userLocation;
-
-    //유저 프로필 클래스
-    ProfileManager profileManager;
-
-
-    //화면에서 바뀔 항목 지정하기
     ImageView imageView;
     TextView textView_title;
     TextView textView_writer;
@@ -67,8 +57,19 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
     TextView textView_rateNum;
     RatingBar ratingBar;
     TextView memo;
+
+
+    //책리뷰 유저 프로필 관련된 변수
+    //아이템의 유저이름, 유저사진, 유저위치
+    String review_userName;
+    String review_userImage;
+    String review_userLocation;
+    //유저 프로필 클래스
+    ProfileManager profileManager;
+
+    //좋아요 댓글 관 된 변수
     TextView like_num;
-    static TextView chat_num;
+    TextView chat_num;
     Button likeBtn;
     Button chatBtn;
     ImageView user_image;
@@ -82,33 +83,22 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
     // 좋아요 누가 눌렀는지 나타내는 변수 {"abc123":true,"kfc456":true}
     JSONObject userLikes;
 
+    // 현재 로그인된 계정 관련된 정보
+    String userId; //현재 로그인된 계정의 유저 아이디
+    String userName; // 현재 로그인된 계정의 유저 이름
+    String comment; // 현재 로그인된 계정의 유저가 남긴 코멘트
+    long time; //현재 로그인된 계정의 유저가 게시물 남긴 시간
 
-    // 현재 로그인된 계정의 유저 아이디
-    String userId;
-    // 현재 로그인된 계정의 이름
-    String userName;
-    // 현재 로그인된 계정의 유저 사진
-    String userImagePath;
-    //현재 로그인된 계정의 유저 위치
-    String userLocation;
-    //유저가 남긴 코멘트
-    String comment;
-    //유저가 게시물 남긴 시간
-    long time;
-    ProfileManager commentProfileManager;
-
-    //댓글 리사이클러뷰
-    RecyclerView commentRecyclerView;
-    //댓글 어댑터
-    CommentAdapter commentAdapter;
-    ArrayList<CommentItem> commentList;
-    //댓글 등록 버튼
-    ImageView uploadBtn;
-    //텍스트 인풋창
-    TextInputEditText textInputEditText;
-    CommentItem newCommentItem;
-    ImageView closeBtn;
-    TextView commentNum;
+    //댓글 데이터 관련된 변수
+    ProfileManager commentProfileManager; //댓글 아이템용 유저프로필 클래스
+    RecyclerView commentRecyclerView;   //댓글 리사이클러뷰
+    CommentAdapter commentAdapter;     //댓글 어댑터
+    ArrayList<CommentItem> commentList;     //코멘트 어레이리스트
+    ImageView uploadBtn;   //댓글 등록 버튼
+    TextInputEditText textInputEditText;   //텍스트 인풋창
+    CommentItem newCommentItem; //새로운 코멘트 아이템
+    ImageView closeBtn; //닫기 버튼
+    TextView commentNum; //댓글 갯수
 
 
 
@@ -154,6 +144,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         key = bookReviewItem.getKey();
         reviewUserId = key.split("_")[0];
 
+        //1-1. 책리뷰 관련 데이터 렌더링
         SharedPreferences sharedPreferences = getSharedPreferences("책리뷰", MODE_PRIVATE);
         String jsonData = sharedPreferences.getString(key, null);
         if(jsonData != null){
@@ -240,13 +231,15 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
             }
         }
 
-        //프로필 중 프로필 사진, 유저 위치 데이터를 가져온다.
+        // 1-2. 프로필 중 프로필 사진, 유저 위치 데이터를 가져온다.
+
         // 프로필 객체를 만들어준다. 객체를 먼저 만들어야, 해당 객체의 기능을 사용할 수 있다
         profileManager = new ProfileManager();
         //userId를 가지고 프로필을 찾는다
         SharedPreferences sharedPreferences2 = getSharedPreferences("프로필", MODE_PRIVATE);
         Gson gson = new Gson();
         String jsonData2= sharedPreferences2.getString(reviewUserId, null); //기본값 null
+
         //키인 userId로 뽑은 객체인 profileManager
         // profileManager가 null이 아닌 경우에만 쉐어드에서 뽑아와서 할당한다
         if(jsonData2 != null){
@@ -262,6 +255,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         user_name.setText(review_userName);
         user_location.setText(review_userLocation);
 
+        //좋아요 버튼
         likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,7 +268,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                // 배경 이미지 변경
+                // 버튼 이미지 색깔변경 변경 / 갯수 +1 올리기
                 try {
                     if (userLikes.getBoolean(userId)) {
                         likeBtn.setBackgroundResource(R.drawable.likebtn_clicked);
@@ -307,6 +301,9 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
             }
         });
 
+        //댓글 버튼을 누르면, 댓글 어레이리스트가 담긴 다이얼로그가 등장한다
+        // step1. 이를 위해 바텀 다이얼로그를 초기화해준다.
+
         //바텀 다어얼로그 초기화
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ExploreBookReviewActivity.this); //바텀 다어얼로그
         View bottomSheetView = getLayoutInflater().inflate(R.layout.dialog_explore_comment_list, null); //바텀 다이얼로그 뷰
@@ -322,6 +319,17 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         commentRecyclerView = bottomSheetView.findViewById(R.id.recyclerView10);
 
         commentList = new ArrayList<CommentItem>(); //초기화
+        //다음 과정은 onCreate 바로 안에서 설정해준다. (btn.setOnClickListener 안이 아니라)
+        //commentList의 형태 잡아줌
+        //CommentItem : String imagePath, String userName, String userLocation, String comment, String time
+
+        // error: int java.util.ArrayList.size()' on a null object reference
+        //if CommentItem is the type of objects you want to store in the list, you should initialize it like this:
+
+        //2. 쉐어드 '댓글'에 저장된 내역이 있으면, 데이터를 가져온다
+        // step1. jsonData3(문자열) => commentJSONArray => commentJsonObject 순서로 파싱하고,
+        // step2. 얻은 commentJsonObject의 속성을 가져와서 commentItem을 완성한다
+        // step3. commentItem를 commentList에 담는다
 
         SharedPreferences sharedPreferences3 = getSharedPreferences("댓글", MODE_PRIVATE);
         String jsonData3 = sharedPreferences3.getString(key, null);
@@ -347,26 +355,26 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
 
         }
 
-        commentNum.setText(String.valueOf(chatBtn_num));//쉐어드 에서 가져온 갯수 할당
-
-        //다음 과정은 onCreate 바로 안에서 설정해준다. (btn.setOnClickListener 안이 아니라)
-        //commentList의 형태 잡아줌
-        //CommentItem : String imagePath, String userName, String userLocation, String comment, String time
-
-        // error: int java.util.ArrayList.size()' on a null object reference
-        //if CommentItem is the type of objects you want to store in the list, you should initialize it like this:
-        //initiate adapter
-        commentAdapter = new CommentAdapter(this);
+        commentNum.setText(String.valueOf(chatBtn_num));//댓글 다이얼로그 상에서 상단에 쉐어드 에서 가져온 댓글갯수 할당
         //onCreate 바로 안에 써주기
-        //어댑터와 리사이클러뷰 연결(읽기 용)
+        // (1. commentList의 초기화, 2.commentAdapter 초기화, 3. commentRecyclerView와 어댑터 연결, 4. commentRecyclerView 초기화)
+
+
+        //1.commentList의 초기화는 위에서 이미 이루어졌다
+
+        //2.initiate adapter
+        commentAdapter = new CommentAdapter(this);
+
+        //3.어댑터와 리사이클러뷰 연결(읽기 용)
         commentAdapter.setCommentList(commentList);
 
-        //initiate recyclerview
+        //4.initiate recyclerview
         commentRecyclerView.setAdapter(commentAdapter);
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(ExploreBookReviewActivity.this));
 
-        // 버튼 속 버튼 함수를 만들지 말고, 따로 따로 선언하는 것이 보기 좋다
-        //바텀 다어얼로그 등장 설정
+        // 버튼 속 버튼 함수를 만들지 말고, 따로 따로 선언하는 것이 보기 좋다 (중첩된 리스너 X)
+
+        //댓글 바텀 다어얼로그 등장
         chatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -375,7 +383,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
             }
         });
 
-        // 바텀 다이얼로그 사라지게
+        // 댓글 바텀 다이얼로그 사라짐
         closeBtn = bottomSheetView.findViewById(R.id.imageView18);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -385,6 +393,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
             }
         });
 
+        //댓글 바텀 다이얼로그 중에서 등록버튼
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -440,8 +449,8 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
     }
 
 
+    //댓글 갯수 쉐어드에 저장하는 메소드
     public void StoreChatNum(Context context){
-        //댓글 갯수 쉐어드에 저장
         //1. jsonArray에 추가
         try {
             jsonArray.put(10, commentList.size()); // 10번째 인덱스에 댓글 갯수 설정
@@ -463,8 +472,8 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         editor.apply();
     }
 
+    //댓글 데이터 쉐어드에 저장하는 메소드
     public void StoreChatData(Context context){
-        // 댓글 데이터 쉐어드에 저장하기
         //댓글 이라는 쉐어드 파일을 하나 만들고, key: userId_bookName_X 에 value는 jsonObject를 원소로 하는 jsonArray(추후, 문자열 파싱)
         //[{이름: 징니, 내용: 안녕, 시간: 11},{이름: 징니, 내용: 안녕, 시간: 11},{이름: 징니, 내용: 안녕, 시간: 11}]
         //로 저장한다
@@ -494,7 +503,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         // 2.  JSON 배열을 문자열로 직렬화
         String comment_JSONString = commentJSONArray.toString();
 
-        //3. 문자열을 SharedPreferences에 저장
+        // 3. 문자열을 SharedPreferences에 저장
         SharedPreferences sharedPreferences3 = getSharedPreferences("댓글", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences3.edit();
         editor.putString(key, comment_JSONString);
@@ -513,7 +522,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         return super.onOptionsItemSelected(item);
     }
 
-    // 2. StoreChatNum이 포함된 활동에서 인터페이스를 구현합니다.
+    // 인터페이스 사용 순서 2. StoreChatNum이 포함된 활동에서 인터페이스를 구현합니다.
     @Override
     public void onChatNumUpdated(Context context) {
         StoreChatNum(context);
@@ -527,6 +536,7 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
 
    //인터페이스는 액티비티와 어댑터 사이의 메소드 등을 연결해주는 역할
 
-    // ChatNumListener 인터페이스는 onChatNumUpdated 메소드를 정의합니다.
-    // 본 액티비티는 이 인터페이스 "AdapterChatNumListener" 를 구현하고 정의된 메소드(onChatNumUpdated)를 호출할 수 있습니다.
-    // 어댑터에서 특정 이벤트(예: 버튼 클릭)가 발생하면 이러한 방식으로 인터페이스를 사용하면 다양한 용도로 구조화되고 잘 정의된 방식을 만들 수 있습니다.
+    //<인터페이스 사용순서>
+    // 1. ChatNumListener 인터페이스는 onChatNumUpdated 메소드를 정의합니다.
+    // 2. 본 액티비티는 이 인터페이스 "AdapterChatNumListener" 를 구현하고 정의된 메소드(onChatNumUpdated)를 호출할 수 있습니다.
+    // 3. 어댑터에서 특정 이벤트(예: 버튼 클릭)가 발생하면 이러한 방식으로 인터페이스를 사용하면 다양한 용도로 구조화되고 잘 정의된 방식을 만들 수 있습니다.

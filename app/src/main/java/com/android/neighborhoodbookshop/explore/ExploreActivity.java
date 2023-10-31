@@ -40,6 +40,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ExploreActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    //1. 지도에 유저 위치에 기반한 마커를 찍는다
+    //2. 서치뷰에 유저가 검색어를 입력하면, 그 검색어를 인텐트로 다음 액티비티에 전송한다
+
     //MyLocationActivity는 OnMapReadyCallback 인터페이스를 구현합니다.
     //OnMapReadyCallback 인터페이스는 지도가 준비되었을때 실행할 콜백을 정의하는 것
 
@@ -61,17 +65,19 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
     String profile_introduce;
     String userId;
 
+    //바텀 시트 레이아웃
+    ImageView profile;
+    TextView userName;
+    TextView userLocation;
+    TextView userIntroduction;
+
+    // 하단 버튼 레이아웃
     LinearLayout 내서재;
     LinearLayout 탐색;
     LinearLayout 북클럽;
     LinearLayout 타이머;
     LinearLayout 설정;
 
-    //바텀 시트 레이아웃
-    ImageView profile;
-    TextView userName;
-    TextView userLocation;
-    TextView userIntroduction;
 
 
     @Override
@@ -113,23 +119,6 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
             }
         }
 
-        //여러개의 마커를 찍는 방법
-        // latList와 lngList에 저장된 위도와 경도 정보를 이용하여 LatLng 객체를 생성합니다.
-        // 이후, GoogleMap 객체의 addMarker() 메소드를 사용하여 지도상에 마커를 추가합니다.
-
-        //1. LatLng 객체 생성
-        latLngList = new ArrayList<>();
-        for (int i = 0; i < latList.size(); i++) {
-            latLngList.add(new LatLng(latList.get(i), lngList.get(i)));
-        }
-
-
-        내서재 = (LinearLayout) findViewById(R.id.mylibrary);
-        탐색 = (LinearLayout) findViewById(R.id.explore);
-        북클럽 = (LinearLayout) findViewById(R.id.bookclub);
-        타이머= (LinearLayout) findViewById(R.id.timer);
-        설정 = (LinearLayout) findViewById(R.id.setting);
-
         //서치뷰에 유저가 검색어를 입력하면, 그 검색어를 인텐트로 다음 액티비티에 전송함
         SearchView searchView = (SearchView) findViewById(R.id.searchview0);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -147,6 +136,23 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
                 return false;
             }
         });
+
+        //여러개의 마커를 찍는 방법
+        // 1. latList와 lngList에 저장된 위도와 경도 정보를 이용하여 LatLngList 객체를 생성합니다.
+        // 2. 이후, GoogleMap 객체의 addMarker() 메소드를 사용하여 지도상에 마커를 추가합니다.
+
+        //step 1.latLngList 생성
+        latLngList = new ArrayList<>();
+        for (int i = 0; i < latList.size(); i++) {
+            latLngList.add(new LatLng(latList.get(i), lngList.get(i)));
+        }
+
+        내서재 = (LinearLayout) findViewById(R.id.mylibrary);
+        탐색 = (LinearLayout) findViewById(R.id.explore);
+        북클럽 = (LinearLayout) findViewById(R.id.bookclub);
+        타이머= (LinearLayout) findViewById(R.id.timer);
+        설정 = (LinearLayout) findViewById(R.id.setting);
+
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -178,7 +184,7 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        // 2. GoogleMap 객체에서 addMarker() 메소드를 사용하여 마커 추가
+        //step 2. GoogleMap 객체에서 addMarker() 메소드를 사용하여 마커 추가
         for (int i = 0; i < latLngList.size(); i++) {
 
             //마커의 아이콘 크기를 조절

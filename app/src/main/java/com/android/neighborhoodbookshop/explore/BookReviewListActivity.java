@@ -25,7 +25,6 @@ import java.util.Map;
 public class BookReviewListActivity extends AppCompatActivity {
 
     //검색한 책이름에 대한 여러 유저의 책리뷰 리스트를 렌더링합니다.
-
     RecyclerView recyclerView;
     BookReviewListAdapter bookReviewListAdapter;
     public static ArrayList<BookReviewItem> bookReviewItems; //static으로 변경 (static으로 공유하려면 초기화 x)
@@ -100,8 +99,8 @@ public class BookReviewListActivity extends AppCompatActivity {
 
                 //step3 .shared preference에서 프로필 data를 가져옴
                 // 프로필 중 프로필 사진, 유저 위치 데이터를 가져온다.
-                // 프로필 객체를 만들어준다. 객체를 먼저 만들어야, 해당 객체의 기능을 사용할 수 있다
                 profileManager = new ProfileManager();
+                // 프로필 객체를 만들어준다. 객체를 먼저 만들어야, 해당 객체의 기능을 사용할 수 있다
                 SharedPreferences sharedPreferences2 = getSharedPreferences("프로필", MODE_PRIVATE);
                 Gson gson = new Gson();
                 String json= sharedPreferences2.getString(userId, null); //기본값 null

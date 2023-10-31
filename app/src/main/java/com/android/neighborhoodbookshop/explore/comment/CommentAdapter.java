@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
-    //3. CommentAdapter 클래스에서 인터페이스의 인스턴스와 이를 설정할 메서드를 정의합니다.
+    //인터페이스 사용 순서 3. CommentAdapter 클래스에서 인터페이스의 인스턴스와 이를 설정할 메서드를 정의합니다.
     private ChatListener chatListener;
     private ArrayList<CommentItem> commentList;
 
