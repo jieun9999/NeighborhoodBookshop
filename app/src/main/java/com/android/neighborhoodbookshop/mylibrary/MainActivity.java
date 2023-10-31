@@ -31,6 +31,7 @@ import com.android.neighborhoodbookshop.setting.SettingActivity;
 import com.android.neighborhoodbookshop.explore.ShowCurrentLocation;
 import com.android.neighborhoodbookshop.timer.TimerActivity;
 import com.android.neighborhoodbookshop.loginsignup.UserManager;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -120,8 +121,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mylibrary_main);
 
-        //UserManager에서 static으로 사용자 ID를 가져옴
-        userId = UserManager.getUserId();
+        //카카오 로그인인 경우, 자체 로그인인 경우로 나눈다.
+        //인텐트로 넘어온 데이터 받아오기
+        Intent intent = getIntent();
+        if(intent != null){
+            //1. 카카오 로그인인 경우
+            userId = intent.getStringExtra("kakao_userid");
+        }else{
+            //2. 자체 로그인인 경우
+            //UserManager에서 static으로 사용자 ID를 가져옴
+            userId = UserManager.getUserId();
+        }
 
         //프로필의 이름, 가입정보 쉐어드 파일에서 불러오기
         textView_userName = findViewById(R.id.textView28);
@@ -135,12 +145,12 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-        } else {
-            Toast.makeText(getApplicationContext(), "가입정보가 비었습니다", Toast.LENGTH_SHORT).show();
+        }else if(intent != null){
+            String kakao_username = intent.getStringExtra("kakao_username");
+            textView_userName.setText(kakao_username);
         }
         // 객체를 만들어준다. 객체를 먼저 만들어야 , 해당 객체의 기능을 사용할 수 있다
         profileManager = new ProfileManager();
-
 
         //프로필의 4항목, 프로필 쉐어드 파일에서 불러오기
         mPrefs = getSharedPreferences("프로필", MODE_PRIVATE);
@@ -149,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         //키인 userId로 뽑은 객체인 profileManager
         // profileManager가 null이 아닌 경우에만 쉐어드에서 뽑아와서 할당한다
         if(json != null){
-
             profileManager = gson.fromJson(json, ProfileManager.class);
         }
 
@@ -162,7 +171,13 @@ public class MainActivity extends AppCompatActivity {
         if(profileManager != null && profileManager.getImagePath() != null){
             Uri imageUri = Uri.parse(profileManager.getImagePath().toString());
             imageView_userPicture.setImageURI(imageUri);
+        }else if(intent != null){
+            // 카카오 로그인일 경우에
+            String kakao_imagepath = intent.getStringExtra("kakao_image");
+            // 글라이드 사용하여 이미지 띄우기
+            Glide.with(imageView_userPicture).load(kakao_imagepath).circleCrop().into(imageView_userPicture);
         }
+
         //나의 이미지 설정하기
         imageView_userPicture.setOnClickListener(new View.OnClickListener() {
             @Override

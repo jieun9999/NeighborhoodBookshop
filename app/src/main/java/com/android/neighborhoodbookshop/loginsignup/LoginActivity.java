@@ -1,27 +1,37 @@
 package com.android.neighborhoodbookshop.loginsignup;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.neighborhoodbookshop.R;
 import com.android.neighborhoodbookshop.mylibrary.MainActivity;
+import com.kakao.sdk.auth.model.OAuthToken;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
+
 public class LoginActivity extends AppCompatActivity {
 
     private Button btn_login;
+    private ImageView kakao_btn_login;
     private TextView btn_signup;
-
     private EditText userID, password;
 
     // onCreate 메서드
@@ -41,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_signup = findViewById(R.id.button3);
         userID= findViewById(R.id.아이디입력);
         password = findViewById(R.id.비밀번호입력);
-
+        kakao_btn_login = findViewById(R.id.imageView20);
 
         //이벤트리스터 객체를 만든 다음에, 버튼의 이벤트리스너에 인자로서 넣기, 여러개의 함수를 한번에 정의하기 용이함
         View.OnClickListener listener = new View.OnClickListener(){ //익명내부 클래스 : 이벤트 처리에 용이함
@@ -92,6 +102,68 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(listener);
         btn_signup.setOnClickListener(listener);
 
+        //카카오톡이 설치되어 있는지 확인하는 메서드, 카카오에서 제공함. 콜백 객체를 이용함
+
+        Function2<OAuthToken, Throwable, Unit> callback = new Function2<OAuthToken, Throwable, Unit>() {
+            @Override
+            // 콜백 메서드
+            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+                // 토큰이 전달된다면 로그인이 성공한 것이고 토큰이 전달되지 않으면 로그인 실패한다.
+                if(oAuthToken != null){
+                    updateKakaoLoginUi();
+                }else {
+                    //로그인 실패
+                    Log.e(TAG, "invoke: login fail" );
+                }
+                return null;
+            }
+        };
+
+        //카카오 로그인 버튼 클릭 리스너
+        kakao_btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //해당 기기에 카카오톡이 설치되어 있는지를 확인
+                if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)){
+                    UserApiClient.getInstance().loginWithKakaoTalk(LoginActivity.this, callback);
+                }else{
+                    //카카오톡이 설치되어 있지 않다면
+                    UserApiClient.getInstance().loginWithKakaoAccount(LoginActivity.this, callback);
+                }
+            }
+        });
     }
 
+    private void updateKakaoLoginUi(){
+        //로그인 여부에 따른 UI 설정
+        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+            @Override
+            public Unit invoke(User user, Throwable throwable) {
+                if(user != null){
+                    //유저가 로그인 되어있다면
+
+                    // 유저의 아이디
+                    Log.d(TAG, "invoke: id =" + user.getId());
+                    // 유저의 이메일
+                    Log.d(TAG, "invoke: email =" + user.getKakaoAccount().getEmail());
+                    // 유저의 닉네임
+                    Log.d(TAG, "invoke: nickname =" + user.getKakaoAccount().getProfile().getNickname());
+                    //유저의 이미지
+                    Log.d(TAG, "invoke: image =" + user.getKakaoAccount().getProfile().getProfileImageUrl());
+
+                    //메인 액티비티로 유저 데이터 보내주기
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("kakao_userid", user.getId()); // 아이디 보내주기
+                    intent.putExtra("kakao_username", user.getKakaoAccount().getProfile().getNickname()); //닉네임 보내주기
+                    intent.putExtra("kakao_image", user.getKakaoAccount().getProfile().getThumbnailImageUrl()); // 이미지 보내주기
+                    startActivity(intent);
+
+                }else{
+                    //유저가 로그인 되어있지 않으면
+                    Toast.makeText(getApplicationContext(),"카카오톡에 로그인 되지 않은 상태입니다",Toast.LENGTH_SHORT).show();
+                }
+                return null;
+            }
+        });
+    }
 }
