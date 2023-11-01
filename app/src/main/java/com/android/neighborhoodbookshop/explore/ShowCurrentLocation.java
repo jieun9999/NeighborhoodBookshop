@@ -77,8 +77,8 @@ public class ShowCurrentLocation extends AppCompatActivity implements OnMapReady
         android.widget.Button button = findViewById(R.id.getlocation);
 
         //위치요청 설정
-        locationRequest = new com.google.android.gms.location.LocationRequest().
-                setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY)//가장 정확한 위치를 요청합니다. 이 설정을 사용하면 위치 서비스가 GPS를 사용하여 위치를 확인할 가능성이 높습니다.
+        locationRequest = new com.google.android.gms.location.LocationRequest()
+                .setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY)//가장 정확한 위치를 요청합니다. 이 설정을 사용하면 위치 서비스가 GPS를 사용하여 위치를 확인할 가능성이 높습니다.
                 .setInterval(UPDATE_INTERVAL_MS) //업데이트 간격
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS); //가장 빠른 업데이트 간격
 
@@ -220,7 +220,7 @@ public class ShowCurrentLocation extends AppCompatActivity implements OnMapReady
             return "주소 미발견";
         }else {
             Address address = addresses.get(0); //public class Address: 주소, 즉 위치를 설명하는 문자열 집합을 나타내는 클래스
-            addressString = address.getAddressLine(0).toString();
+            addressString = address.getAddressLine(0);
             return addressString;
             //주어진 인덱스(0부터 시작)로 번호가 매겨진 주소의 라인을 반환하거나, 해당 라인이 없으면 null을 반환합니다.
         }

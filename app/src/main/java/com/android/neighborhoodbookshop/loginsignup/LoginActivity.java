@@ -24,6 +24,8 @@ import com.kakao.sdk.user.model.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
@@ -140,7 +142,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public Unit invoke(User user, Throwable throwable) {
                 if(user != null){
-                    //유저가 로그인 되어있다면
+
+                    //유저가 카톡에 로그인 되어있다면
+                    UserManager.setUserId(String.valueOf(user.getId()));// userId를 static 변수에 저장
 
                     // 유저의 아이디
                     Log.d(TAG, "invoke: id =" + user.getId());
@@ -151,15 +155,30 @@ public class LoginActivity extends AppCompatActivity {
                     //유저의 이미지
                     Log.d(TAG, "invoke: image =" + user.getKakaoAccount().getProfile().getProfileImageUrl());
 
-                    //메인 액티비티로 유저 데이터 보내주기
+                    //유저 데이터 1. 아이디, 닉네임 쉐어드에 저장하기
+                    //sharedPreference에 '가입정보' 이라는 파일명을 만들고, key: abc123, value: "피츄"(어레이 리스트로)로 저장한다.
+                    ArrayList<String> signupData = new ArrayList<>();
+                    signupData.add(user.getKakaoAccount().getProfile().getNickname());
+
+                    SharedPreferences preferences = getSharedPreferences("가입정보", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+
+                    JSONArray jsonArray = new JSONArray();
+                    for (String data: signupData) {
+                        jsonArray.put(data);
+                    }
+
+                    editor.putString(String.valueOf(user.getId()), jsonArray.toString());
+                    editor.apply();
+
+                    //유저 데이터 2. 유저 이미지는 메인 액티비티로 보내주기 (인텐트 활용)
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("kakao_userid", user.getId()); // 아이디 보내주기
-                    intent.putExtra("kakao_username", user.getKakaoAccount().getProfile().getNickname()); //닉네임 보내주기
+                    intent.putExtra("kakao_id", String.valueOf(user.getId())); //유저 아이디 보내주기 (string 으로)
                     intent.putExtra("kakao_image", user.getKakaoAccount().getProfile().getThumbnailImageUrl()); // 이미지 보내주기
                     startActivity(intent);
 
                 }else{
-                    //유저가 로그인 되어있지 않으면
+                    //유저가 카톡에 로그인 되어있지 않으면
                     Toast.makeText(getApplicationContext(),"카카오톡에 로그인 되지 않은 상태입니다",Toast.LENGTH_SHORT).show();
                 }
                 return null;

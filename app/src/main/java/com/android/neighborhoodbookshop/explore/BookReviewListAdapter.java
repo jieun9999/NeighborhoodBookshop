@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.neighborhoodbookshop.R;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -85,8 +86,18 @@ public class BookReviewListAdapter extends RecyclerView.Adapter<BookReviewListAd
             bookImage.setImageURI(uri);
             bookName.setText(item.getBookName());
             bookWriter.setText(item.getWriter());
-            Uri uri2 = Uri.parse(item.getProfile_imagePath());
-            image.setImageURI(uri2);
+
+            //이미지 경로에 따라 다르게 처리
+            //1. 로컬 (내부저장소 ) 경로
+            String imagePath = item.getProfile_imagePath();
+            if(imagePath.startsWith("/data/")){
+                Uri imageUri = Uri.parse(imagePath);
+                image.setImageURI(imageUri);
+
+                //2. 웹 파일 경로
+            }else if(imagePath.startsWith("http://") || imagePath.startsWith("https://")){
+                Glide.with(image).load(imagePath).circleCrop().into(image);
+            }
             userName.setText(item.getProfile_name());
             userLocation.setText(item.getProfile_location().substring(5));
         }

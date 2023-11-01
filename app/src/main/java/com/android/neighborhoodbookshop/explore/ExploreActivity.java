@@ -1,11 +1,14 @@
 package com.android.neighborhoodbookshop.explore;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +23,9 @@ import com.android.neighborhoodbookshop.setting.SettingActivity;
 import com.android.neighborhoodbookshop.timer.TimerActivity;
 import com.android.neighborhoodbookshop.bookclub.BookClubActivity;
 import com.android.neighborhoodbookshop.mylibrary.MainActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -104,8 +110,8 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
         // iterates over each key-value pair in the map.
         for(Map.Entry<String, ?> entry:allEntries.entrySet()){
             // retrieves the value of the current key-value pair as a string.
-            String key = entry.getKey().toString();
-            String json = entry.getValue().toString();
+            String key = entry.getKey();
+            String json = (String) entry.getValue();
             //attempts to parse the string as a JSON object and retrieve the value associated with the key “lat” as a double.
             // If an exception is thrown, it is caught and printed to the console.
             try {
@@ -186,27 +192,67 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
 
         //step 2. GoogleMap 객체에서 addMarker() 메소드를 사용하여 마커 추가
         for (int i = 0; i < latLngList.size(); i++) {
+            String imagePath = imgList.get(i);
+
+            LatLng latLngItem =  latLngList.get(i);
+            String userIdItem = userIdList.get(i);
 
             //마커의 아이콘 크기를 조절
             //kerOptions 객체의 icon() 메소드를 사용하여 BitmapDescriptor 객체를 생성한 후,
             // BitmapDescriptorFactory 클래스의 fromBitmap() 메소드를 사용하여 크기를 조절한 이미지를 생성합니다.
             //이후, MarkerOptions 객체의 icon() 메소드에 생성된 이미지를 전달하여 마커의 아이콘을 설정합니다.
 
-            //1. 단순히 이미지 크기를 줄여서 마커를 만들기
-            BitmapDescriptor icon =
-                    BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.
-                    decodeFile(imgList.get(i)), 100,100,false));
+            //단순히 이미지 크기를 줄여서 마커를 만들기
 
-            Marker marker = map.addMarker(new MarkerOptions()
-                    .position(latLngList.get(i))
-                    .icon(icon));
+            //이미지 경로 종류에 따라 분절하기
 
-            marker.setTag(userIdList.get(i)); //마커에 태그(id) 추가
+            //1. 로컬 이미지(내부 저장소) 경로
+            if (imagePath.startsWith("/data/")) {
+                BitmapDescriptor icon  = BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(BitmapFactory.
+                        decodeFile(imagePath), 100, 100, false));
+
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .position(latLngItem)
+                        .icon(icon));
+
+                marker.setTag(userIdItem); //마커에 태그(id) 추가
+
+            }
+            //2. 웹 경로 (Glide를 사용하여 이미지를 로드하고 비트맵으로 변환)
+            else if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+
+                Glide.with(ExploreActivity.this).asBitmap().load(imagePath)
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                // 이미지 로드가 완료되면 호출됩니다.
+                                // 여기에서 resource는 로드된 비트맵입니다.
+
+                                // 비트맵을 BitmapDescriptor로 변환
+                                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resource);
+
+                                // 마커 생성 및 설정
+                                MarkerOptions markerOptions = new MarkerOptions()
+                                        .position(latLngItem)
+                                        .icon(icon);
+
+                                Marker marker = map.addMarker(markerOptions);
+                                marker.setTag(userIdItem); // 마커에 태그(id) 추가
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                                // 이미지 로드가 취소되거나 지워질 때 호출됩니다.
+                            }
+                        });
+            }
+
         }
 
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngList.get(0), 10));
         //카메라를 latLngList.get(0) 으로 이동하고 줌 레벨 10으로 설정하여 해당 위치를 확대해서 보여줍니다.
 
+        // 마커를 누르면 프로필 바텀 시트가 뜬다
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -246,8 +292,17 @@ public class ExploreActivity extends AppCompatActivity implements OnMapReadyCall
                 userLocation = bottomSheetView.findViewById(R.id.textView16);
                 userIntroduction = bottomSheetView.findViewById(R.id.textView17);
 
-                Uri uri = Uri.parse(profile_image);
-                profile.setImageURI(uri);
+                //profile_image가 로컬 경로인지 웹 경로인지에 따라 처리가 달라진다
+
+                //1. 로컬 파일 경로 (내부저장소)
+                if(profile_image.startsWith("/data/")){
+                    Uri imageUri = Uri.parse(profile_image);
+                    profile.setImageURI(imageUri);
+
+                    //2. 웹 파일 경로
+                }else if(profile_image.startsWith("http://") || profile_image.startsWith("https://")){
+                    Glide.with(profile).load(profile_image).circleCrop().into(profile);
+                }
                 userName.setText(name);
                 userLocation.setText(profile_location.substring(5));
                 userIntroduction.setText(profile_introduce);

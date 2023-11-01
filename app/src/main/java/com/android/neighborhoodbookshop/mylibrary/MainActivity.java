@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
@@ -107,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     //유저 프로필 클래스
     ProfileManager profileManager;
     // json object를 쉐어드에 저장하고 불러오는 클래스 데이터
-    SharedPreferences mPrefs;
 
     //읽은 책 수
     int bookNum;
@@ -123,10 +123,37 @@ public class MainActivity extends AppCompatActivity {
 
         //카카오 로그인인 경우, 자체 로그인인 경우로 나눈다.
         //인텐트로 넘어온 데이터 받아오기
+        SharedPreferences mPrefs = getSharedPreferences("프로필", MODE_PRIVATE); // 프로필 쉐어드 전역 선언
+
+        // 1-1.카카오 로그인을 했는데 쉐어드에 정보가 아직 없는 경우랑(최초 로그인), 1-2.카카오 로그인을 했는데 정보가 있는 경우(2번째 이상 로그인)를 나눠서 짠다.
+        // 2. 자체 로그인인 경우
+
         Intent intent = getIntent();
-        if(intent != null){
+        if(intent.getStringExtra("kakao_id") != null){
             //1. 카카오 로그인인 경우
-            userId = intent.getStringExtra("kakao_userid");
+            userId = intent.getStringExtra("kakao_id");
+            imagePath = intent.getStringExtra("kakao_image");
+            // 이미지 파일의 경로를 저장
+            // 이 imagePath를 필요한 곳에서 사용할 수 있습니다.
+
+            //1-1. 카카오 로그인을 했는데 쉐어드에 정보가 아직 없는 경우랑(최초 로그인)
+            if(mPrefs.getString(userId, "").equals("")){
+                // 어디서 프로필 매니저를 초기화하는지가 굉장히 중요하다
+                profileManager = new ProfileManager();  // 객체를 만들어준다. 객체를 먼저 만들어야 , 해당 객체의 기능을 사용할 수 있다
+                //json object에 속성을 저장
+                profileManager.setImagePath(imagePath);
+                //쉐어드에 저장하기 위한 프로필 쉐어드 불러오기
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(profileManager);
+                prefsEditor.putString(userId, json);
+                prefsEditor.apply();
+
+                //1-2.카카오 로그인을 했는데 쉐어드에 무엇이라도 저장된 경우
+            } else if (!mPrefs.getString(userId, "").equals("")) {
+                //그냥 아래로 쭉 코드를 읽으면서 프로필 정보를 렌더링하면은 된다
+            }
+
         }else{
             //2. 자체 로그인인 경우
             //UserManager에서 static으로 사용자 ID를 가져옴
@@ -145,15 +172,10 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-        }else if(intent != null){
-            String kakao_username = intent.getStringExtra("kakao_username");
-            textView_userName.setText(kakao_username);
         }
-        // 객체를 만들어준다. 객체를 먼저 만들어야 , 해당 객체의 기능을 사용할 수 있다
-        profileManager = new ProfileManager();
+
 
         //프로필의 4항목, 프로필 쉐어드 파일에서 불러오기
-        mPrefs = getSharedPreferences("프로필", MODE_PRIVATE);
         Gson gson = new Gson();
         String json= mPrefs.getString(userId, null); //기본값 null
         //키인 userId로 뽑은 객체인 profileManager
@@ -166,16 +188,20 @@ public class MainActivity extends AppCompatActivity {
 
         //1. 프로필 이미지
         imageView_userPicture = findViewById(R.id.imageView6);
-        //쉐어드 파일에서 이미지 파일 경로 불러오고 = > uri로 파싱 => 이미지 교체
-        // 문자열 이미지 파일 경로를 URI로 변환
-        if(profileManager != null && profileManager.getImagePath() != null){
-            Uri imageUri = Uri.parse(profileManager.getImagePath().toString());
-            imageView_userPicture.setImageURI(imageUri);
-        }else if(intent != null){
-            // 카카오 로그인일 경우에
-            String kakao_imagepath = intent.getStringExtra("kakao_image");
-            // 글라이드 사용하여 이미지 띄우기
-            Glide.with(imageView_userPicture).load(kakao_imagepath).circleCrop().into(imageView_userPicture);
+        //쉐어드 파일에서 이미지 파일 경로 불러오고, 파일 경로 종류에 따라 다르게 렌더링한다
+
+        if(profileManager != null && profileManager.getImagePath() != null) {
+            imagePath = profileManager.getImagePath();
+
+            //1. 로컬 파일 경로 (내부저장소)
+            if(imagePath.startsWith("/data/")){
+                Uri imageUri = Uri.parse(imagePath);
+                imageView_userPicture.setImageURI(imageUri);
+
+                //2. 웹 파일 경로
+            }else if(imagePath.startsWith("http://") || imagePath.startsWith("https://")){
+            Glide.with(imageView_userPicture).load(imagePath).circleCrop().into(imageView_userPicture);
+            }
         }
 
         //나의 이미지 설정하기
@@ -193,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
         // ShowCurrentLocation 액티비티로 이동했다가 다시 돌아올거임
         textView_userLocation = findViewById(R.id.textView31);
         //쉐어드 파일에서 위치 정보 가져와서 렌더링
-        if( profileManager != null &&profileManager.getLocation() != null){
-            textView_userLocation.setText(profileManager.getLocation().toString());
+        if( profileManager != null && profileManager.getLocation() != null){
+            textView_userLocation.setText(profileManager.getLocation());
         }
         textView_userLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,13 +230,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        textView_userName = findViewById(R.id.textView28);
-
         //3. 소개글
         textView_introduction = findViewById(R.id.textView14);
         // 나의 소개글을 쉐어드 파일에서 가져오기
         if(profileManager != null && profileManager.getIntroduction() != null){
-            textView_introduction.setText(profileManager.getIntroduction().toString());
+            textView_introduction.setText(profileManager.getIntroduction());
         }
         // 나의 소개글 설정하기
         textView_introduction.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         //다이얼로그에 새롭게 입력한 내용을 가져온다
 
-                        String input =input_introduction.getText().toString();
+                        String input = String.valueOf(input_introduction.getText());
                         if(!TextUtils.isEmpty(input)){
                             //json object에 속성을 저장
                             profileManager.setIntroduction(input);
@@ -262,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                             Gson gson = new Gson();
                             String json = gson.toJson(profileManager);
                             prefsEditor.putString(userId, json);
-                            prefsEditor.commit();
+                            prefsEditor.apply();
                         }
                         dialog.dismiss();
                     }
@@ -274,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         textView_insta = findViewById(R.id.textView35);
         // 나의 인스타 url 쉐어드 파일에서 가져오기
         if(profileManager != null && profileManager.getInstaURL() != null){
-            textView_insta.setText(profileManager.getInstaURL().toString());
+            textView_insta.setText(profileManager.getInstaURL());
         }
         // 나의 인스타 url 설정하기
         textView_insta.setOnClickListener(new View.OnClickListener() {
@@ -313,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         //다이얼로그에 새롭게 입력한 내용을 가져온다
-                        String input = input_instaUrl.getText().toString();
+                        String input = String.valueOf(input_instaUrl.getText());
                         if(!TextUtils.isEmpty(input)) {
                             //json object에 속성을 저장
                             profileManager.setInstaURL(input);
@@ -323,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                             Gson gson = new Gson();
                             String json = gson.toJson(profileManager);
                             prefsEditor.putString(userId, json);
-                            prefsEditor.commit();
+                            prefsEditor.apply();
                         }
                         dialog.dismiss();
                     }
@@ -335,7 +359,6 @@ public class MainActivity extends AppCompatActivity {
             //쉐어드 파일에서 어레이리스트 데이터 불러오고, 저장함.
 
             SharedPreferences preferences2 = getSharedPreferences("책리뷰", Context.MODE_PRIVATE);
-
             //SharedPreferences에서 모든 데이터를 가져와서 'allEntries"에 맵 형태로 저장한다
             Map<String, ?> allEntries = preferences2.getAll();
 
@@ -586,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
                 //쉐어드에서 해당 데이터를 삭제한다
                 //쉐어드에서 키가 abc123_인간관계론을 삭제하려면?
                 SharedPreferences preferences = getSharedPreferences("책리뷰", MODE_PRIVATE);
-                String keyToDelete = userId + "_" +bookNameToDelete; //쉐어드 키 만들기
+                String keyToDelete = userId + "_" + bookNameToDelete + "_"+ (userReviewList.size()-1); //쉐어드 키 만들기
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.remove(keyToDelete);
                 editor.apply();
@@ -615,7 +638,7 @@ public class MainActivity extends AppCompatActivity {
                 bookNameToEdit =  bookNameToEdit.replace(" ", ""); // 띄어쓰기를 제거
 
                 SharedPreferences preferences = getSharedPreferences("책리뷰", MODE_PRIVATE);
-                String keyToEdit = userId + "_" +  bookNameToEdit;
+                String keyToEdit = userId + "_" +  bookNameToEdit+ "_"+ (userReviewList.size()-1);
                 //1. 쉐어드 파일에서 해당 키에 대한 값을 가져옵니다
                 String jsonValue = preferences.getString(keyToEdit, null);
 
@@ -664,8 +687,9 @@ public class MainActivity extends AppCompatActivity {
             // 인텐트로 넘겨받은 위도, 위도를 쉐어드 '프로필' 파일에 객체 => 문자열로 변환하여 저장하기
 
             // myLocation에다가 문자열 주소 할당하기
-            String myLocation = data.getExtras().getString("myLocation"); //구글맵에서 온 사용자 위치 정보(문자열)
+            String myLocation = data.getStringExtra("myLocation"); //구글맵에서 온 사용자 위치 정보(문자열)
             textView_userLocation.setText(myLocation);
+
             double myLat = data.getDoubleExtra("myLat", 0); //기본값 0
             double myLng = data.getDoubleExtra("myLng", 0); //기본값 0
 
@@ -675,11 +699,12 @@ public class MainActivity extends AppCompatActivity {
             profileManager.setLng(myLng);
 
             //쉐어드에 저장
+            SharedPreferences mPrefs = getSharedPreferences("프로필", MODE_PRIVATE); // 프로필 쉐어드 선언
             SharedPreferences.Editor prefsEditor = mPrefs.edit();
             Gson gson = new Gson();
             String json = gson.toJson(profileManager);
             prefsEditor.putString(userId, json);
-            prefsEditor.commit();
+            prefsEditor.apply();
 
         } else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) { //유저 프로필 사진 설정, 갤러리 인텐트 끝나고 실행
             Uri uri = data.getData();
@@ -697,11 +722,12 @@ public class MainActivity extends AppCompatActivity {
                 profileManager.setImagePath(imagePath);
 
                 //쉐어드에 저장
+                SharedPreferences mPrefs = getSharedPreferences("프로필", MODE_PRIVATE); // 프로필 쉐어드 선언
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 Gson gson = new Gson();
                 String json = gson.toJson(profileManager);
                 prefsEditor.putString(userId, json);
-                prefsEditor.commit();
+                prefsEditor.apply();
 
                 //쉐어드 파일에 저장하기 (프로필- 이미지)
             } catch (IOException e) {

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.neighborhoodbookshop.R;
+import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,8 +97,20 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
 
         void onBind(CommentItem item){
-            Uri uri = Uri.parse(item.getUserImagePath());
-            profile.setImageURI(uri);
+
+            //이미지 경로에 따라 다르게 처리
+            String imagePath = item.getUserImagePath();
+
+            //1. 로컬 (내부저장소 ) 경로
+            if(imagePath.startsWith("/data/")){
+                Uri imageUri = Uri.parse(imagePath);
+                profile.setImageURI(imageUri);
+
+                //2. 웹 파일 경로
+            }else if(imagePath.startsWith("http://") || imagePath.startsWith("https://")){
+                Glide.with(profile).load(imagePath).circleCrop().into(profile);
+            }
+
             name.setText(item.getUserName());
             location.setText(item.getUserLocation());
             comment.setText(item.getComment());

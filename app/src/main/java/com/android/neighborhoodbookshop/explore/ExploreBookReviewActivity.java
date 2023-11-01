@@ -25,6 +25,7 @@ import com.android.neighborhoodbookshop.loginsignup.UserManager;
 import com.android.neighborhoodbookshop.explore.comment.ChatListener;
 import com.android.neighborhoodbookshop.explore.comment.CommentAdapter;
 import com.android.neighborhoodbookshop.explore.comment.CommentItem;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -250,8 +251,18 @@ public class ExploreBookReviewActivity extends AppCompatActivity implements Chat
         review_userImage = profileManager.getImagePath();
         review_userLocation = profileManager.getLocation().substring(5);
 
-        Uri imageUri = Uri.parse(review_userImage);
-        user_image.setImageURI(imageUri);
+        //이미지 경로에 따라 다르게 처리
+        //1. 로컬 (내부저장소 ) 경로
+        String imagePath = review_userImage;
+        if(imagePath.startsWith("/data/")){
+            Uri imageUri = Uri.parse(imagePath);
+            user_image.setImageURI(imageUri);
+
+            //2. 웹 파일 경로
+        }else if(imagePath.startsWith("http://") || imagePath.startsWith("https://")){
+            Glide.with(user_image).load(imagePath).circleCrop().into(user_image);
+        }
+
         user_name.setText(review_userName);
         user_location.setText(review_userLocation);
 
