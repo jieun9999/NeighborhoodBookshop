@@ -5,7 +5,8 @@
 
 
 ## 1. 데이터 설계
-<img width="2227" alt="data_최종" src="https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/557d8632-21cd-4525-b7ae-654089b97029">
+<img width="2227" alt="data_최종" src="https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/557d8632-21cd-4525-b7ae-654089b97029">  
+
   
 
 ## 2. 기능구현
@@ -20,7 +21,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f
 
 
   > 주요기법: 쉐어드 프리퍼런스
-
+  
 
 
 
@@ -33,8 +34,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11
 - 카카오톡 api에서 유저의 이미지를 받아옵니다. 
 
   > 주요기법: 카카오톡 api, 쉐어드 프리퍼런스
-
-
+  
 
 
    
