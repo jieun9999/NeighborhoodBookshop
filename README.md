@@ -3,12 +3,13 @@
 책으로 모이는 사람들, 동네책방  
 
 
-## 0. 데이터 설계
+## 1. 데이터 설계
 <img width="2227" alt="data_최종" src="https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/557d8632-21cd-4525-b7ae-654089b97029">
-
   
 
-## 1. 회원가입, 로그인
+## 2. 기능구현
+
+### 1. 회원가입, 로그인
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f-4340-8fe0-6155b196f1fd
 
@@ -22,7 +23,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f
 
 
 
-## 2. 카카오 로그인 
+### 2. 카카오 로그인 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11-4557-84fb-19f190479989
 
@@ -36,7 +37,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11
 
 
    
-## 3. 프로필 등록 
+### 3. 프로필 등록 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3-4770-b022-2e926945e455
 
@@ -51,7 +52,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 
 
    
-## 4. 책리뷰 crud 
+### 4. 책리뷰 crud 
+
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/59bdd23a-ee9c-4575-b21c-9a4413647909
 
 
 - 등록하기: 책 관련 정보(책이름, 저자, 출판사, 출판일, ISBN)과 감상평(별점, 메모)를 등록합니다.
@@ -65,7 +68,10 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 
 
    
-## 5. 지도 기반으로 다른 유저 확인 
+### 5. 지도 기반으로 다른 유저 확인 
+
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/565e02dd-d883-4959-b917-44f50e15a286
+
 
 - 내 주변의 유저들을 구글맵 상에서 확인할 수 있습니다.
 - 프로필 마커를 누르면, 해당 유저의 프로필 바텀 시트가 올라옵니다.
@@ -76,7 +82,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 
 
    
-## 6. 책 이름으로 리뷰 검색하기
+### 6. 책 이름으로 리뷰 검색하기
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b-4ee0-a381-cbfbe3027cc0
 
@@ -89,7 +95,10 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 
 
 
-## 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
+### 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
+
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e3235641-2eb4-46e2-b4dd-0b9dc16643ac
+
 
 - 다른 유저의 프로필과 책리뷰를 확인할 수 있습니다.
 - 좋아요를 누르거나, 댓글을 달 수 있습니다. 다른 유저의 댓글 또한 확인할 수 있습니다.
@@ -101,7 +110,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 
 
    
-## 8. 북클럽 crud 
+### 8. 북클럽 crud 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e042817e-2cc8-4b0b-8895-288d39e32600
 
@@ -116,7 +125,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e042817e-2cc8
 
 
    
-## 9. 독서시간 기록하기, 명언 배너
+### 9. 독서시간 기록하기, 명언 배너
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/7676e797-290b-414e-8dac-be2ab9da650e
 
@@ -126,3 +135,20 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/7676e797-290b
 
 > 주요기법: 핸들러
 
+
+
+
+## 3. 소감
+
+### <아쉬운 점>
+- 책리뷰 쉐어드를 jsonArray로 저장했기 때문에, 나중에 추가되는 속성인 '좋아요 불린', '좋아요 갯수', '댓글 갯수' 등이 고정된 인덱스에 있어야 한다는 문제가 생김 (예를 들어, 좋아요는 안남겼는데 댓글은 남기는 경우)
+- else 처리 무결성 부족
+- 로그아웃 기능 미구현
+- 댓글 작성자만 댓글을 삭제할 수 있도록 권한을 줘야 하는데, 현재는 그냥 전체적으로 삭제가 가능한 상태임
+
+=> 구현은 했으나, 최적은 아닐 수도 있다는 생각이 듦. 
+
+### <만족한 점>
+- 하나의 앱을 직접 기획, 개발, 관리해보았다
+- 외부 api를 사용해서 기능을 구현하였다
+- 적합한 데이터 설계를 하고, 쉐어드 프리퍼런스에 데이터를 저장하고 불러올 수 있었다
