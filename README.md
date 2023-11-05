@@ -99,7 +99,8 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 
 ## 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
 
-https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/c64a313a-6a62-4266-aadd-8ce3d25f564f
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e3235641-2eb4-46e2-b4dd-0b9dc16643ac
+
 
 - 다른 유저의 프로필과 책리뷰를 확인할 수 있습니다.
 - 좋아요를 누르거나, 댓글을 달 수 있습니다. 다른 유저의 댓글 또한 확인할 수 있습니다.
