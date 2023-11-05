@@ -5,7 +5,6 @@
 
 ## 0. 데이터 설계
 <img width="2227" alt="data_최종" src="https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/557d8632-21cd-4525-b7ae-654089b97029">
-
   
 
 ## 1. 회원가입, 로그인
