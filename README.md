@@ -2,6 +2,10 @@
 
 책으로 모이는 사람들, 동네책방  
 
+
+## 0. 데이터 설계
+<img width="2227" alt="data_최종" src="https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/557d8632-21cd-4525-b7ae-654089b97029">
+
   
 
 ## 1. 회원가입, 로그인
@@ -16,9 +20,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f
   > 주요기법: 쉐어드 프리퍼런스
 
 
+
+
 ## 2. 카카오 로그인 
-
-
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11-4557-84fb-19f190479989
 
@@ -27,6 +31,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11
 - 카카오톡 api에서 유저의 이미지를 받아옵니다. 
 
   > 주요기법: 카카오톡 api, 쉐어드 프리퍼런스
+
+
+
 
    
 ## 3. 프로필 등록 
@@ -40,6 +47,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 
   > 주요기법: 구글 맵 api, 쉐어드 프리퍼런스
 
+
+
+
    
 ## 4. 책리뷰 crud 
 
@@ -50,6 +60,10 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 - 삭제하기: '⋮' 버튼을 클릭하면, 모달이 뜨고, 책리뷰를 삭제할 수 있습니다.
 
  > 주요기법:  인텐트, 리사이클러뷰, 쉐어드 프리퍼런스
+
+
+
+
    
 ## 5. 지도 기반으로 다른 유저 확인 
 
@@ -57,6 +71,10 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 - 프로필 마커를 누르면, 해당 유저의 프로필 바텀 시트가 올라옵니다.
 
 > 주요기법: 구글 맵 api
+
+
+
+
    
 ## 6. 책 이름으로 리뷰 검색하기
 
@@ -68,6 +86,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 > 주요기법: 리사이클러뷰, 쉐어드 프리퍼런스
 
 
+
+
+
 ## 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
 
 - 다른 유저의 프로필과 책리뷰를 확인할 수 있습니다.
@@ -75,6 +96,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 - 쉐어드에 처음 댓글이 생성된 시간도 저장하기 때문에 '몇분 전', '몇 시간 전' 과 같은 댓글 기록이 뜹니다.
 
 > 주요기법:  리사이클러뷰, 쉐어드 프리퍼런스
+
+
+
 
    
 ## 8. 북클럽 crud 
@@ -88,6 +112,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e042817e-2cc8
 
 > 주요기법: 리사이클러뷰
 
+
+
+
    
 ## 9. 독서시간 기록하기, 명언 배너
 
@@ -98,3 +125,4 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/7676e797-290b
 - 3초마다 다른 배너가 등장합니다.
 
 > 주요기법: 핸들러
+
