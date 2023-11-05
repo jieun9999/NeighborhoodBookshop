@@ -143,9 +143,6 @@ public class LoginActivity extends AppCompatActivity {
             public Unit invoke(User user, Throwable throwable) {
                 if(user != null){
 
-                    //유저가 카톡에 로그인 되어있다면
-                    UserManager.setUserId(String.valueOf(user.getId()));// userId를 static 변수에 저장
-
                     // 유저의 아이디
                     Log.d(TAG, "invoke: id =" + user.getId());
                     // 유저의 이메일
@@ -155,25 +152,35 @@ public class LoginActivity extends AppCompatActivity {
                     //유저의 이미지
                     Log.d(TAG, "invoke: image =" + user.getKakaoAccount().getProfile().getProfileImageUrl());
 
-                    //유저 데이터 1. 아이디, 닉네임 쉐어드에 저장하기
-                    //sharedPreference에 '가입정보' 이라는 파일명을 만들고, key: abc123, value: "피츄"(어레이 리스트로)로 저장한다.
-                    ArrayList<String> signupData = new ArrayList<>();
-                    signupData.add(user.getKakaoAccount().getProfile().getNickname());
-
                     SharedPreferences preferences = getSharedPreferences("가입정보", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
 
-                    JSONArray jsonArray = new JSONArray();
-                    for (String data: signupData) {
-                        jsonArray.put(data);
-                    }
+                    //유저가 카톡에 로그인 되어있다면
+                   UserManager.setUserId(String.valueOf(user.getId()));// userId를 static 변수에 저장
 
-                    editor.putString(String.valueOf(user.getId()), jsonArray.toString());
-                    editor.apply();
+                    //가입정보에 해당 아이디로 가입된 데이터가 없는 경우에만 저장하기!
+                    // (그렇지 않으면, 항상 초기화가 되면서 해당 아이디 관련 데이터가 유실되는 문제가 생김)
+
+                    if(!preferences.contains(UserManager.getUserId())){
+                        // 해당 아이디를 키로 가지고 있는지 확인 (없으면 저장)
+
+                        //유저 데이터 1. 아이디, 닉네임 쉐어드에 저장하기
+                        //sharedPreference에 '가입정보' 이라는 파일명을 만들고, key: abc123, value: "피츄"(어레이 리스트로)로 저장한다.
+                        ArrayList<String> signupData = new ArrayList<>();
+                        signupData.add(user.getKakaoAccount().getProfile().getNickname());
+
+                        JSONArray jsonArray = new JSONArray();
+                        for (String data: signupData) {
+                            jsonArray.put(data);
+                        }
+
+                        editor.putString(UserManager.getUserId(), jsonArray.toString());
+                        editor.apply();
+                    }
 
                     //유저 데이터 2. 유저 이미지는 메인 액티비티로 보내주기 (인텐트 활용)
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("kakao_id", String.valueOf(user.getId())); //유저 아이디 보내주기 (string 으로)
+                    intent.putExtra("kakao_id", UserManager.getUserId()); //유저 아이디 보내주기 (string 으로)
                     intent.putExtra("kakao_image", user.getKakaoAccount().getProfile().getThumbnailImageUrl()); // 이미지 보내주기
                     startActivity(intent);
 
