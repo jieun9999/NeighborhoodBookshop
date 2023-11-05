@@ -52,7 +52,11 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
    
 ## 4. 책리뷰 crud 
 
-https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3be29268-1118-4146-acad-9c58ee573687
+
+
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/59bdd23a-ee9c-4575-b21c-9a4413647909
+
+
 
 
 - 등록하기: 책 관련 정보(책이름, 저자, 출판사, 출판일, ISBN)과 감상평(별점, 메모)를 등록합니다.
