@@ -3,11 +3,13 @@
 책으로 모이는 사람들, 동네책방  
 
 
-## 0. 데이터 설계
+## 1. 데이터 설계
 <img width="2227" alt="data_최종" src="https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/557d8632-21cd-4525-b7ae-654089b97029">
   
 
-## 1. 회원가입, 로그인
+## 2. 기능구현
+
+### 1. 회원가입, 로그인
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f-4340-8fe0-6155b196f1fd
 
@@ -21,7 +23,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f
 
 
 
-## 2. 카카오 로그인 
+### 2. 카카오 로그인 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11-4557-84fb-19f190479989
 
@@ -35,7 +37,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3dd9faa0-eb11
 
 
    
-## 3. 프로필 등록 
+### 3. 프로필 등록 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3-4770-b022-2e926945e455
 
@@ -50,13 +52,9 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 
 
    
-## 4. 책리뷰 crud 
-
-
+### 4. 책리뷰 crud 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/59bdd23a-ee9c-4575-b21c-9a4413647909
-
-
 
 
 - 등록하기: 책 관련 정보(책이름, 저자, 출판사, 출판일, ISBN)과 감상평(별점, 메모)를 등록합니다.
@@ -70,7 +68,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/59bdd23a-ee9c
 
 
    
-## 5. 지도 기반으로 다른 유저 확인 
+### 5. 지도 기반으로 다른 유저 확인 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/565e02dd-d883-4959-b917-44f50e15a286
 
@@ -84,7 +82,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/565e02dd-d883
 
 
    
-## 6. 책 이름으로 리뷰 검색하기
+### 6. 책 이름으로 리뷰 검색하기
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b-4ee0-a381-cbfbe3027cc0
 
@@ -97,7 +95,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 
 
 
-## 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
+### 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e3235641-2eb4-46e2-b4dd-0b9dc16643ac
 
@@ -112,7 +110,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e3235641-2eb4
 
 
    
-## 8. 북클럽 crud 
+### 8. 북클럽 crud 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e042817e-2cc8-4b0b-8895-288d39e32600
 
@@ -127,7 +125,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/e042817e-2cc8
 
 
    
-## 9. 독서시간 기록하기, 명언 배너
+### 9. 독서시간 기록하기, 명언 배너
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/7676e797-290b-414e-8dac-be2ab9da650e
 
@@ -140,7 +138,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/7676e797-290b
 
 
 
-##3 소감
+## 3. 소감
 
 ### <아쉬운 점>
 - 책리뷰 쉐어드를 jsonArray로 저장했기 때문에, 나중에 추가되는 속성인 '좋아요 불린', '좋아요 갯수', '댓글 갯수' 등이 고정된 인덱스에 있어야 한다는 문제가 생김 (예를 들어, 좋아요는 안남겼는데 댓글은 남기는 경우)
