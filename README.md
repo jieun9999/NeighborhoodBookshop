@@ -52,6 +52,8 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
    
 ## 4. 책리뷰 crud 
 
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3be29268-1118-4146-acad-9c58ee573687
+
 
 - 등록하기: 책 관련 정보(책이름, 저자, 출판사, 출판일, ISBN)과 감상평(별점, 메모)를 등록합니다.
 - 상세보기: 등록한 책리뷰의 전체 내용을 확인할 수 있습니다.
@@ -65,6 +67,8 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/b195a25d-d5f3
 
    
 ## 5. 지도 기반으로 다른 유저 확인 
+
+
 
 - 내 주변의 유저들을 구글맵 상에서 확인할 수 있습니다.
 - 프로필 마커를 누르면, 해당 유저의 프로필 바텀 시트가 올라옵니다.
@@ -89,6 +93,8 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/72ad8cde-0a1b
 
 
 ## 7. 다른 유저의 리뷰에 좋아요/ 댓글 달기 
+
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/c64a313a-6a62-4266-aadd-8ce3d25f564f
 
 - 다른 유저의 프로필과 책리뷰를 확인할 수 있습니다.
 - 좋아요를 누르거나, 댓글을 달 수 있습니다. 다른 유저의 댓글 또한 확인할 수 있습니다.
