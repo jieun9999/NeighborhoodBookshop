@@ -5,7 +5,7 @@
   
 
 ## 1. 회원가입, 로그인
-- 쉐어드 프리퍼런스
+*쉐어드 프리퍼런스* 
 
 
 https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/4041a695-ff4f-4340-8fe0-6155b196f1fd
