@@ -1,7 +1,6 @@
 # NeighborhoodBookshop
 
 책으로 모이는 사람들, 동네책방  
-
 책 읽고, 글 쓰고, 모임도 가지는 책기반 sns 
 
 
