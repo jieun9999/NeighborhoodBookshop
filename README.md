@@ -68,6 +68,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/3be29268-1118
    
 ## 5. 지도 기반으로 다른 유저 확인 
 
+https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/565e02dd-d883-4959-b917-44f50e15a286
 
 
 - 내 주변의 유저들을 구글맵 상에서 확인할 수 있습니다.
@@ -130,4 +131,7 @@ https://github.com/jieun9999/NeighborhoodBookshop/assets/112951633/7676e797-290b
 - 3초마다 다른 배너가 등장합니다.
 
 > 주요기법: 핸들러
+
+
+
 
